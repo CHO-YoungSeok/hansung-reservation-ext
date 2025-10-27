@@ -7,11 +7,11 @@ export default defineConfig({
 
 export const contentScripts = [
   {
-    matches: ["https://hansung.ac.kr/cncschool/7309/*"], // 스크립트를 실행할 URL 패턴
+    matches: ["https://hansung.ac.kr/cncschool/7309/*"], // 기자재
     js: ["content-scripts/modify-goods-ui.ts"]
   },
   {
-    matches: ["https://www.hansung.ac.kr/onestop/8952/*"], // 스크립트를 실행할 URL 패턴
+    matches: ["https://www.hansung.ac.kr/onestop/8952/*"], // 상상 베이스 예약
     js: ["content-scripts/modify-space-ui.ts"]
   }
 ];
