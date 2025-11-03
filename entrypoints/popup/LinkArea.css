@@ -1,5 +1,10 @@
+.LinkArea {
+    justify-content: center;  /* 주축(기본 가로) 중앙 */
+    align-items: center;      /* 교차축(기본 세로) 중앙 */
+}
+
 .LinkArea-img {
-    width: 50px;    /* 원하는 너비 값으로 변경 */
+    width: 70px;    /* 원하는 너비 값으로 변경 */
     height: 50px;   /* 원하는 높이 값으로 변경 */
     object-fit: contain;  /* 비율 유지하며 이미지 잘림 방지 */
     display: block; /* 미세한 여백 방지 */
@@ -12,5 +17,5 @@
     padding: 4px;
     display: flex;
     align-items: center;
-    gap: 8px; /* 이미지와 텍스트 간격 */
+    gap: 8px;
 }
