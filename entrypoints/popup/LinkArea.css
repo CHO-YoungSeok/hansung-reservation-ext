@@ -1,14 +1,11 @@
-.BtnLink {
-}
-
-.BtnLink-img {
+.LinkArea-img {
     width: 50px;    /* 원하는 너비 값으로 변경 */
     height: 50px;   /* 원하는 높이 값으로 변경 */
     object-fit: contain;  /* 비율 유지하며 이미지 잘림 방지 */
     display: block; /* 미세한 여백 방지 */
 }
 
-.Btnlink-btn {
+.LinkArea-text {
     border: none;
     background: transparent;
     cursor: pointer;

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import reactLogo from '@/assets/react.svg';
 import wxtLogo from '/wxt.svg';
 import './App.css';
-import BtnLink from './BtnLink.jsx'
+import LinkArea from "./LinkArea.jsx";
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -21,22 +22,17 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-          <div style={{display: "flex", justifyContent: "center", gap: "10px"}} id="BtnLink-container">
-              <BtnLink
+        <div style={{display: "flex", justifyContent: "center", gap: "10px"}} id="LinkArea-container">
+              <LinkArea
                   url="https://learn.hansung.ac.kr/"
                   text="e-class"
                   imgSrc="https://i.namu.wiki/i/cS0GHv6Ougi3uEDW-HkDBfgbtiVpLFyJBn5fO-XN7I47zVx-81-7WSoJtMD9op-gkGI6POqxKTkqe1g5n6e-NQ.webp"
                   alt="HSU e-class"
               />
               <button onClick={() => {
-                  const btn_container = document.getElementById("BtnLink-container");
+                  // 새로운 것 구현
               }}> + </button>
-          </div>
-        <p>
-            <a href="https://github.com/CHO-YoungSeok/hansung-reservation-ext">
-                <code>gitHub/hansung-reservation-ext</code>
-            </a>
-        </p>
+        </div>
       </div>
       <p className="read-the-docs">
         Click on the WXT and React logos to learn more
