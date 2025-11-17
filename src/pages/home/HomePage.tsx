@@ -16,6 +16,7 @@ interface Building {
 }
 
 const defaultShortcuts: Shortcut[] = [
+  { id: '0', name: '기자재 대여', url: 'https://hansung.ac.kr/cncschool/7309/subview.do', icon: '🔧' },
   { id: '1', name: 'e-class', url: 'https://learn.hansung.ac.kr/', icon: '📚' },
   { id: '2', name: '공지사항', url: 'https://www.hansung.ac.kr/hansung/1633/subview.do', icon: '📢' },
   { id: '3', name: '종합정보시스템', url: 'https://portal.hansung.ac.kr/', icon: '💻' },
