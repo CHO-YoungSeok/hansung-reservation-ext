@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { GoodsListPage } from '~/src/pages/goods/GoodsListPage';
 
 export default defineContentScript({
-  matches: ['https://hansung.ac.kr/cncschool/7309/subview.do*'],
+  matches: [
+    'https://hansung.ac.kr/cncschool/7309/subview.do*',
+    'https://hansung.ac.kr/lend/cncschool/1/*/lendMhrmlList.do*',
+  ],
   main() {
     console.log('기자재 대여 UI 개선 시작');
 

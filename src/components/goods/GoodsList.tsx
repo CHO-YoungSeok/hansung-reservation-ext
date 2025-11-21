@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoodsItem } from './GoodsItem';
 import type { GoodsData } from '../../services/goodsApi';
 import { getDefaultGoods } from '../../services/goodsApi';
 
 export const GoodsList: React.FC = () => {
+  const navigate = useNavigate();
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,21 +16,23 @@ export const GoodsList: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // content script 환경에서는 직접 DOM에서 데이터 추출
-        // fetchGoodsFromCurrentPage가 있으면 사용, 없으면 기본값 사용
-        const { fetchGoodsFromCurrentPage } = await import(
-          '../../../entrypoints/content-script/fetch/goodsList'
-        ).catch(() => ({ fetchGoodsFromCurrentPage: null }));
+        // content script 환경에서는 직접 페이지에서 데이터 추출
+        // fetchGoodsFromCurrentPage는 async 함수이므로 await 필요
+        try {
+          const { fetchGoodsFromCurrentPage } = await import(
+            '../../../entrypoints/content-script/fetch/goodsList'
+          );
 
-        let data: GoodsData[] = [];
+          console.log('📡 기자재 데이터 가져오는 중...');
+          const data = await fetchGoodsFromCurrentPage();
+          console.log('✅ 현재 페이지에서 추출한 기자재 정보:', data);
 
-        if (fetchGoodsFromCurrentPage) {
-          data = fetchGoodsFromCurrentPage();
-          console.log('현재 페이지에서 추출한 기자재 정보:', data);
+          // 데이터가 없으면 기본값 사용
+          setGoods(data.length > 0 ? data : getDefaultGoods());
+        } catch (importError) {
+          console.warn('⚠️ fetch 모듈 import 실패, 기본값 사용:', importError);
+          setGoods(getDefaultGoods());
         }
-
-        // 데이터가 없으면 기본값 사용
-        setGoods(data.length > 0 ? data : getDefaultGoods());
       } catch (err) {
         console.error('Error loading goods:', err);
         setError('데이터를 불러올 수 없습니다. 기본 목록을 표시합니다.');
@@ -42,8 +46,15 @@ export const GoodsList: React.FC = () => {
   }, []);
 
   const handleSelectGoods = (id: string) => {
-    console.log('Selected goods:', id);
-    // TODO: 상세 페이지로 이동
+    // 선택된 기자재 찾기
+    const selectedGoods = goods.find(item => item.id === id);
+
+    if (selectedGoods && selectedGoods.lendGroupSeq && selectedGoods.lendMhrmlSeq) {
+      // 상세 페이지로 이동
+      navigate(`/detail/${selectedGoods.lendGroupSeq}/${selectedGoods.lendMhrmlSeq}`);
+    } else {
+      console.warn('기자재 정보가 없습니다:', id, selectedGoods);
+    }
   };
 
   if (loading) {
@@ -78,8 +89,8 @@ export const GoodsList: React.FC = () => {
       )}
       <div className="goods-list" style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(600px, 1fr))',
-        gap: '16px',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(700px, 1fr))',
+        gap: '20px',
       }}>
         {goods.map(item => (
           <GoodsItem

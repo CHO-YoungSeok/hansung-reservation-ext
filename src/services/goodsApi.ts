@@ -15,6 +15,8 @@ export interface GoodsData {
   description?: string;
   specs?: GoodsSpec;
   warnings?: GoodsWarning;
+  lendGroupSeq?: string; // 카테고리 번호 (2, 3, 4, 1)
+  lendMhrmlSeq?: string; // 기자재 고유 번호
 }
 
 import { getWarningsByGoodsName } from './goodsWarnings';
