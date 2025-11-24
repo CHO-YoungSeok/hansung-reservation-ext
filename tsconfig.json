@@ -7,7 +7,6 @@
     "checkJs": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "extends": ".wxt/tsconfig.json"
+    "esModuleInterop": true
   }
 }
