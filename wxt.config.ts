@@ -7,7 +7,10 @@ export default defineConfig({
     permissions: ['declarativeNetRequest'],
     host_permissions: ['*://hansung.ac.kr/*'],
   },
-  runner: {
-    startUrls: ['file:///Users/0stone_1004/work-space/hansung-reservation-ext/.output/chrome-mv3/newtab.html'],
+  dev: {
+    browser: 'chrome',
+  },
+  webExt: {
+    startUrls: ['file:///Users/0stone_1004/work-space/hansung-reservation-ext/.output/chrome-mv3-dev/newtab.html'],
   },
 });

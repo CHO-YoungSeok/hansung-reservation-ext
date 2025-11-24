@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './style.css';
-import mapImage from '@/assets/HSU_map.png';
+import mapImage from '/assets/HSU_map.png';
 
 interface Building {
   id: string;
@@ -19,19 +19,26 @@ interface QuickLink {
 }
 
 const buildings: Building[] = [
-  {
+    {
+        id: 'sangbae',
+        name: '상상베이스',
+        url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
+        position: { top: '33%', left: '53%' },
+        size: { width: '90px', height: '130px' }
+    },
+    {
     id: 'mirae',
     name: '미래관',
     url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
     position: { top: '40%', left: '70%' },
-    size: { width: '120px', height: '100px' }
+    size: { width: '140px', height: '90px' }
   },
   {
     id: 'naksan',
     name: '낙산관',
     url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
-    position: { top: '75%', left: '92%' },
-    size: { width: '120px', height: '100px' }
+    position: { top: '73%', left: '93%' },
+    size: { width: '100px', height: '140px' }
   },
   {
     id: 'gonghak',
