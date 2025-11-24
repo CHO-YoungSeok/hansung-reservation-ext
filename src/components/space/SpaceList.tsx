@@ -1,45 +1,16 @@
 import React, { useState } from 'react';
 import { SpaceItem } from './SpaceItem';
-import spaceListData from './data/spaceListData.json';
-import { getReservationUrl } from '../../config/space';
 
-interface Space {
-  id: string;
-  name: string;
-  capacity: number;
-  facilities: string[];
-  status: 'available' | 'reserved' | 'unavailable';
-  location?: string;
-  description?: string;
-  coverImageUrl?: string;
-  managerContact?: string;
-  operatingHours?: string;
-  roomGroup?: string;
-}
-
-interface SpaceListProps {
-  // 필요시 커스텀 핸들러를 받을 수 있도록 유지 (확장성)
-  onSelectSpace?: (space: Space) => void;
-}
-
-export const SpaceList: React.FC<SpaceListProps> = ({ onSelectSpace }) => {
-  const [spaces] = useState<Space[]>(spaceListData as Space[]);
+export const SpaceList: React.FC = () => {
+  const [spaces] = useState([
+    { id: '1', name: '세미나실 A', capacity: 10, facilities: ['빔프로젝터', '화이트보드'], status: 'available' as const },
+    { id: '2', name: '세미나실 B', capacity: 20, facilities: ['빔프로젝터', '모니터'], status: 'reserved' as const },
+    { id: '3', name: '세미나실 C', capacity: 15, facilities: ['화이트보드'], status: 'available' as const },
+  ]);
 
   const handleSelectSpace = (id: string) => {
-    const selected = spaces.find((space) => space.id === id);
-    if (!selected) {
-      console.warn('선택한 세미나실을 찾을 수 없습니다:', id);
-      return;
-    }
-
-    if (onSelectSpace) {
-      // 커스텀 핸들러가 있으면 사용
-      onSelectSpace(selected);
-    } else {
-      // 기본 동작: enc 파라미터가 있는 URL로 이동
-      const reservationUrl = getReservationUrl(selected.id);
-      window.location.href = reservationUrl;
-    }
+    console.log('Selected space:', id);
+    // TODO: 상세 페이지로 이동
   };
 
   return (
