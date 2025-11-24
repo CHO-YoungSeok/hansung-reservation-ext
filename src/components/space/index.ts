@@ -1,0 +1,11 @@
+export { SpaceItem } from './SpaceItem';
+export { SpaceList } from './SpaceList';
+export { SpaceReservationForm } from './SpaceDetailForm/SpaceDetailForm';
+export { SpaceCard } from './SpaceDetailForm/SpaceCard';
+export { ManagerInfo } from './SpaceDetailForm/ManagerInfo';
+export { ReservationGuide } from './SpaceDetailForm/ReservationGuide';
+export { ReservationDateSection } from './SpaceDetailForm/ReservationDateSection';
+export { TimeSlotSelection } from './SpaceDetailForm/TimeSlotSelection';
+export { ApplicantForm } from './SpaceDetailForm/ApplicantForm';
+export { AllUsersInfo } from './SpaceDetailForm/AllUsersInfo';
+export type { SpaceSummary, ApplicantProfile, TimeSlot, ReservationFormValues } from './SpaceDetailForm/types';
