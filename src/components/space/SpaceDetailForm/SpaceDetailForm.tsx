@@ -23,6 +23,9 @@ export interface SpaceReservationFormProps {
     values: ReservationFormValues;
   }) => void;
   onCancel?: () => void;
+
+    // 부모가 날짜 변경을 알 수 있게 하는 콜백
+  onReservationDateChange?: (date: string) => void;
 }
 
 // 시간대는 09:00부터 20:00까지 1시간 단위 (버튼 형태, 다중 선택 가능)
@@ -61,6 +64,7 @@ export const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
   pageData,
   onSubmit,
   onCancel,
+  onReservationDateChange,
 }) => {
   // pageData에서 추출한 정보를 우선 사용, 없으면 기본값 사용
   const applicant: ApplicantProfile = {
@@ -99,6 +103,19 @@ export const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
       }));
     }
   }, [pageData?.applicantPhone, pageData?.applicantEmail]);
+
+const handleReservationDateChange = (date: string) => {
+  // 폼 내부 값 업데이트
+  handleInputChange('reservationDate', date);
+
+  // 선택된 시간 초기화 (날짜 바뀌면 이전 선택은 무효)
+  setSelectedTimeSlots([]);
+
+  // 부모(SpaceDetailPage)에 알려서 selectedDate 상태 업데이트
+  if (onReservationDateChange) {
+    onReservationDateChange(date);
+  }
+};
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -175,7 +192,7 @@ export const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
                 value={values.reservationDate}
                 minDate={today}
                 error={errors.reservationDate}
-                onChange={(date) => handleInputChange('reservationDate', date)}
+                onChange={handleReservationDateChange}
               />
 
               <TimeSlotSelection
@@ -197,6 +214,7 @@ export const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
               <AllUsersInfo
                 allUsers={values.allUsers}
                 totalUsers={values.totalUsers}
+                capacity={space.capacity}
                 error={errors.allUsers}
                 onAllUsersChange={(allUsers) => handleInputChange('allUsers', allUsers)}
                 onTotalUsersChange={(totalUsers) => handleInputChange('totalUsers', totalUsers)}
