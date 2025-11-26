@@ -1,0 +1,632 @@
+.space-reservation-form {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px 32px 16px;
+}
+
+.space-reservation-form__grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.space-reservation-form__sidebar {
+  order: 1;
+  position: sticky;
+  top: 24px;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.space-reservation-form__sidebar-card {
+  margin-top: 0;
+}
+
+.space-reservation-form__sidebar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #dbeafe;
+}
+
+.space-reservation-form__sidebar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.space-reservation-form__sidebar-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.space-reservation-form__sidebar-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.space-reservation-form__sidebar-value {
+  font-size: 15px;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+.space-card__container {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
+}
+
+.space-card__image-container {
+  height: 250px;
+  overflow: hidden;
+}
+
+.space-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.space-card__placeholder {
+  width: 100%;
+  height: 100%;
+  background: #e0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4338ca;
+  font-size: 14px;
+}
+
+.space-card__content {
+  padding: 24px;
+}
+
+.space-card__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+.space-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.space-card__info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.space-card__info-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.space-card__info-value {
+  font-size: 14px;
+  color: #1d4ed8;
+  font-weight: 500;
+}
+
+.space-reservation-form__content {
+  order: 2;
+}
+
+.space-reservation-form__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.space-reservation-form__section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.08);
+}
+
+.space-reservation-form__section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.space-reservation-form__time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.space-reservation-form__slot-button {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f3f4f6;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.space-reservation-form__slot-button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.space-reservation-form__slot-button:disabled {
+  cursor: not-allowed;
+}
+
+.space-reservation-form__slot-button--blocked {
+  background: #fee2e2;
+  color: #f87171;
+  border-color: #fecaca;
+}
+
+.space-reservation-form__slot-button--selected {
+  background: #22c55e;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+.space-reservation-form__legend {
+  margin-top: 16px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.space-reservation-form__legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #4b5563;
+  gap: 8px;
+}
+
+.space-reservation-form__legend-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.space-reservation-form__legend-indicator--selected {
+  background: #22c55e;
+}
+
+.space-reservation-form__legend-indicator--available {
+  background: #f3f4f6;
+}
+
+.space-reservation-form__legend-indicator--blocked {
+  background: #fee2e2;
+}
+
+.space-reservation-form__selected-time {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border-radius: 12px;
+  color: #1d4ed8;
+  font-size: 14px;
+}
+
+.space-reservation-form__selected-times {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border-radius: 12px;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.space-reservation-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.space-reservation-form__fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.space-reservation-form__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.space-reservation-form__label {
+  display: block;
+  color: #1d4ed8;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.space-reservation-form__input {
+  width: 100%;
+  padding: 12px 12px 12px 16px !important;
+  border-radius: 20px !important;
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  color: #1d4ed8;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.space-reservation-form__input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.space-reservation-form__input--error {
+  border-color: #f87171;
+}
+
+.space-reservation-form__textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  outline: none;
+  resize: none;
+  font-size: 14px;
+}
+
+.space-reservation-form__textarea--error {
+  border-color: #f87171;
+}
+
+.space-reservation-form__helper-text {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #1d4ed8;
+}
+
+.space-reservation-form__helper-text--error {
+  color: #b91c1c;
+  padding-left: 4px;
+}
+
+.space-reservation-form__button-text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.space-reservation-form__cancel {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.space-reservation-form__cancel-button {
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  color: #1d4ed8;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+}
+
+.space-reservation-form__cancel-button:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.space-reservation-form__cancel-button:active {
+  background: #dbeafe;
+}
+
+.space-reservation-form__required {
+  color: #dc2626;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.space-reservation-form__select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  color: #1d4ed8;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.space-reservation-form__select:hover {
+  border-color: #93c5fd;
+}
+
+.space-reservation-form__select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.space-reservation-form__select--error {
+  border-color: #f87171;
+}
+
+.space-reservation-form__input--readonly {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+  border-radius: 20px !important;
+  padding: 12px 12px 12px 16px !important;
+}
+
+.space-reservation-form__input--date {
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.space-reservation-form__guide {
+  padding: 16px;
+  background: #eff6ff;
+  border-radius: 12px;
+  border-left: 4px solid #3b82f6;
+}
+
+.space-reservation-form__guide p {
+  margin: 8px 0;
+  color: #1e40af;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.space-reservation-form__guide p:first-child {
+  margin-top: 0;
+}
+
+.space-reservation-form__guide p:last-child {
+  margin-bottom: 0;
+}
+
+.space-reservation-form__caution {
+  padding: 12px 16px;
+  background: #fef3c7;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.space-reservation-form__time-table {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.space-reservation-form__time-table-inner {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.space-reservation-form__time-table-inner thead {
+  background: #eff6ff;
+}
+
+.space-reservation-form__time-table-inner th {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  white-space: nowrap;
+}
+
+.space-reservation-form__time-table-inner td {
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px solid #bfdbfe;
+}
+
+.space-reservation-form__time-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.space-reservation-form__time-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.space-reservation-form__submit-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.space-reservation-form__submit-button {
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+}
+
+.space-reservation-form__submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Calendar Styles */
+.calendar {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+}
+
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.calendar__nav-button {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: #1d4ed8;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.calendar__nav-button:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.calendar__month-year {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1d4ed8;
+}
+
+.calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.calendar__weekday {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  padding: 8px 0;
+}
+
+.calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar__day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar__day--empty {
+  cursor: default;
+}
+
+.calendar__day--available {
+  color: #1d4ed8;
+  background: #f3f4f6;
+}
+
+.calendar__day--available:hover {
+  background: #e5e7eb;
+  transform: scale(1.05);
+}
+
+.calendar__day--selected {
+  background: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.calendar__day--today {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+  border: 2px solid #93c5fd;
+}
+
+.calendar__day--today.calendar__day--selected {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.calendar__day--disabled {
+  color: #9ca3af;
+  background: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.calendar__day--disabled:hover {
+  transform: none;
+  background: #f9fafb;
+}
+
+@media (max-width: 768px) {
+  .space-reservation-form__time-table-inner {
+    font-size: 12px;
+  }
+  
+  .space-reservation-form__time-table-inner th,
+  .space-reservation-form__time-table-inner td {
+    padding: 8px 4px;
+  }
+
+  .calendar {
+    max-width: 100%;
+  }
+
+  .calendar__day {
+    font-size: 13px;
+  }
+}
+

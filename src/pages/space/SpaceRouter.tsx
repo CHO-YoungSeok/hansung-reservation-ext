@@ -1,6 +1,6 @@
 import React from 'react';
 import { SpaceListPage } from './SpaceListPage';
-import { SpaceDetailPage } from './SpaceDetailPage';
+import { SpaceReservationPage } from './SpaceReservationPage';
 
 export const SpaceRouter: React.FC = () => {
   // URL 파라미터 확인
@@ -8,8 +8,8 @@ export const SpaceRouter: React.FC = () => {
   const encParam = urlParams.get('enc');
 
   if (encParam) {
-    // enc 파라미터가 있으면 SpaceDetailPage 표시
-    return <SpaceDetailPage />;
+    // enc 파라미터가 있으면 SpaceReservationPage 표시
+    return <SpaceReservationPage />;
   }
 
   // enc 파라미터가 없으면 SpaceListPage 표시

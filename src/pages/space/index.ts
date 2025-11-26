@@ -1,3 +1,3 @@
 export { SpaceListPage } from './SpaceListPage';
-export { SpaceDetailPage } from './SpaceDetailPage';
+export { SpaceReservationPage } from './SpaceReservationPage';
 export { SpaceRouter } from './SpaceRouter';

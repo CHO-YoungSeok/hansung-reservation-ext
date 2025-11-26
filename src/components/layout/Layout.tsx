@@ -1,16 +1,14 @@
 import React from 'react';
-import { Header } from './Header';
 
 interface LayoutProps {
   children: React.ReactNode;
-  title: string;
+  title?: string; // 선택사항으로 변경 (하위 호환성을 위해 유지)
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="layout" style={{ minHeight: '100vh' }}>
-      <Header title={title} />
-      <main style={{ padding: '20px' }}>
+      <main style={{ padding: '0' }}>
         {children}
       </main>
     </div>

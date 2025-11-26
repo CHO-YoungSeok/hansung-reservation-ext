@@ -27,20 +27,17 @@ function extractValueFromTableRow(labelText: string): string | undefined {
   });
 
   if (!targetTh) {
-    console.log(`[데이터 추출] "${labelText}" 라벨을 찾을 수 없음`);
     return undefined;
   }
 
   // 2. 같은 행(tr)에서 td 찾기
   const row = targetTh.closest('tr');
   if (!row) {
-    console.log(`[데이터 추출] "${labelText}" 행을 찾을 수 없음`);
     return undefined;
   }
 
   const td = row.querySelector('td');
   if (!td) {
-    console.log(`[데이터 추출] "${labelText}" td를 찾을 수 없음`);
     return undefined;
   }
 
@@ -50,14 +47,12 @@ function extractValueFromTableRow(labelText: string): string | undefined {
     // input의 value 확인
     let value = input.value?.trim();
     if (value) {
-      console.log(`[데이터 추출] "${labelText}" input value에서 발견: "${value}"`);
       return value;
     }
     
     // value가 없으면 input의 textContent 확인
     value = input.textContent?.trim();
     if (value) {
-      console.log(`[데이터 추출] "${labelText}" input textContent에서 발견: "${value}"`);
       return value;
     }
   }
@@ -75,12 +70,10 @@ function extractValueFromTableRow(labelText: string): string | undefined {
     value = value.replace(labelText, '').trim();
     
     if (value) {
-      console.log(`[데이터 추출] "${labelText}" td textContent에서 발견: "${value}"`);
       return value;
     }
   }
 
-  console.log(`[데이터 추출] "${labelText}" 값을 찾을 수 없음`);
   return undefined;
 }
 
@@ -92,7 +85,6 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
   return new Promise((resolve) => {
     const element = document.querySelector(`#${id}`) as HTMLInputElement;
     if (!element) {
-      console.log(`[데이터 추출] ID "${id}" 요소를 찾을 수 없음`);
       resolve(undefined);
       return;
     }
@@ -100,7 +92,6 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
     // 즉시 값 확인
     let value = element.value?.trim();
     if (value) {
-      console.log(`[데이터 추출] "${label}" ID로 value에서 발견: "${value}"`);
       resolve(value);
       return;
     }
@@ -108,14 +99,12 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
     // textContent 확인
     value = element.textContent?.trim();
     if (value) {
-      console.log(`[데이터 추출] "${label}" ID로 textContent에서 발견: "${value}"`);
       resolve(value);
       return;
     }
 
     // 값이 없고 대기를 원하는 경우 MutationObserver로 감시
     if (waitForValue) {
-      console.log(`[데이터 추출] "${label}" 값이 비어있음. 값이 채워질 때까지 대기...`);
       
       let timeoutId: number | undefined;
       let observer: MutationObserver | undefined;
@@ -128,7 +117,6 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
       // 최대 3초 대기
       timeoutId = window.setTimeout(() => {
         cleanup();
-        console.log(`[데이터 추출] "${label}" 대기 시간 초과`);
         resolve(undefined);
       }, 3000);
 
@@ -137,7 +125,6 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
         const currentValue = (element as HTMLInputElement).value?.trim();
         if (currentValue) {
           cleanup();
-          console.log(`[데이터 추출] "${label}" 값이 채워짐: "${currentValue}"`);
           resolve(currentValue);
         }
       });
@@ -156,7 +143,6 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
         if (currentValue) {
           element.removeEventListener('input', inputHandler);
           cleanup();
-          console.log(`[데이터 추출] "${label}" input 이벤트로 값 발견: "${currentValue}"`);
           resolve(currentValue);
         }
       };
@@ -168,14 +154,11 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
         if (currentValue) {
           element.removeEventListener('change', changeHandler);
           cleanup();
-          console.log(`[데이터 추출] "${label}" change 이벤트로 값 발견: "${currentValue}"`);
           resolve(currentValue);
         }
       };
       element.addEventListener('change', changeHandler);
     } else {
-      // 대기하지 않는 경우
-      console.log(`[데이터 추출] "${label}" ID로 값을 찾을 수 없음`);
       resolve(undefined);
     }
   });
@@ -188,8 +171,6 @@ function extractValueById(id: string, label: string, waitForValue: boolean = tru
  */
 export async function extractPageData(): Promise<ExtractedPageData> {
   const data: ExtractedPageData = {};
-
-  console.log('[데이터 추출] 시작');
 
   // 담당자 정보 추출 - 여러 방법 시도
   // 방법 1: ID로 직접 찾기 (값이 채워질 때까지 대기)
@@ -238,17 +219,6 @@ export async function extractPageData(): Promise<ExtractedPageData> {
   if (data.applicantStudentId === '') data.applicantStudentId = undefined;
   if (data.applicantPhone === '') data.applicantPhone = undefined;
   if (data.applicantEmail === '') data.applicantEmail = undefined;
-  
-  // 디버깅을 위한 로그
-  console.log('[데이터 추출] 최종 결과:', {
-    managerName: data.managerName,
-    managerPhone: data.managerPhone,
-    applicantType: data.applicantType,
-    applicantName: data.applicantName,
-    applicantStudentId: data.applicantStudentId,
-    applicantPhone: data.applicantPhone,
-    applicantEmail: data.applicantEmail,
-  });
 
   // 신청안내 추출
   const guideDiv = document.querySelector('#guide');

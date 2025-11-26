@@ -1,5 +1,5 @@
 // src/utils/calendarEvents.ts
-import { TimeSlot } from '../components/space/SpaceDetailForm/types';
+import { TimeSlot } from '../components/space/SpaceReservationForm/types';
 
 export interface RawEvent {
   date: string;       // "2025-11-03"
@@ -65,7 +65,6 @@ export function getYearMonthFromPage(doc: Document) {
     mm = pad2(now.getMonth() + 1);
   }
 
-  console.log('[calendar] getYearMonthFromPage 결과:', { yyyy, mm });
   return { yyyy, mm };
 }
 
@@ -79,8 +78,6 @@ export function extractEventsFromDom(
   const { yyyy, mm } = getYearMonthFromPage(doc);
   const TDs = Array.from(doc.querySelectorAll<HTMLTableCellElement>('td'));
   const events: RawEvent[] = [];
-
-  console.log('[calendar] extractEventsFromDom 시작:', { yyyy, mm });
 
   // 세미나실(IB111), IB101, 그룹스터디실(4F) 등
   const ROOM_NAME_RE =
@@ -126,8 +123,6 @@ export function extractEventsFromDom(
     let currentRoom: string | null = null;
 
     for (const line of rest) {
-      console.log('[calendar][raw line]', { day, line });
-
       // 1) "IB105 09:00~17:00 신청불가" 형태
       const mFull = line.match(fullLineRe);
       if (mFull) {
@@ -146,12 +141,6 @@ export function extractEventsFromDom(
         });
 
         currentRoom = room;
-        console.log('[calendar][matched-full]', {
-          day,
-          room,
-          timeRanges,
-          unavailable,
-        });
         continue;
       }
 
@@ -159,7 +148,6 @@ export function extractEventsFromDom(
       const mRoom = line.match(dashRoomRe);
       if (mRoom) {
         currentRoom = mRoom[1];
-        console.log('[calendar][room-line]', { day, room: currentRoom });
         continue;
       }
 
@@ -175,22 +163,9 @@ export function extractEventsFromDom(
           timeRanges,
           unavailable: true,
         });
-        console.log('[calendar][matched-time-only]', {
-          day,
-          room: currentRoom,
-          timeRanges,
-        });
         continue;
       }
-
-      // 그 외는 무시 (예: 안내문, "전체 세미나실(IB111) IB101 ..." 등)
-      console.log('[calendar][no match]', { day, line, currentRoom });
     }
-  });
-
-  console.log('[calendar] extractEventsFromDom 완료:', {
-    totalEvents: events.length,
-    sample: events.slice(0, 10),
   });
 
   return { events, yyyy, mm };
@@ -218,12 +193,11 @@ export function getEventsFromWindowOrDom(
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length > 0) {
         win.__SPACE_CALENDAR_EVENTS__ = parsed;
-        console.log('[calendar] sessionStorage에서 이벤트 복원:', parsed.length);
         return parsed as RawEvent[];
       }
     }
   } catch (e) {
-    console.warn('[calendar] sessionStorage 파싱 오류:', e);
+    // sessionStorage 파싱 오류 무시
   }
 
   // 3) DOM에서 직접 추출
@@ -233,10 +207,8 @@ export function getEventsFromWindowOrDom(
   try {
     sessionStorage.setItem(CALENDAR_EVENTS_KEY, JSON.stringify(events));
   } catch (e) {
-    console.warn('[calendar] sessionStorage 저장 오류:', e);
+    // sessionStorage 저장 오류 무시
   }
-
-  console.log('[calendar] DOM에서 직접 이벤트 추출:', events.length);
   return events;
 }
 
@@ -252,10 +224,6 @@ export function buildTimeSlotsForRoom(
   dateStr: string,
 ): TimeSlot[] {
   const events = getEventsFromWindowOrDom();
-
-  console.log('[timeSlots] roomName=', roomName, 'dateStr=', dateStr);
-  console.log('[timeSlots] events.length=', events.length);
-  console.log('[timeSlots] sample events=', events.slice(0, 5));
 
   // 기본 09~21시 한 시간 단위 슬롯
   const baseSlots: TimeSlot[] = [];
@@ -276,9 +244,6 @@ export function buildTimeSlotsForRoom(
       // "세미나실(IB111)" 과 "IB111" / "IB104" 같이 매칭되도록 includes 사용
       ev.room.includes(roomName),
   );
-
-  console.log('[timeSlots] blockedEvents.length=', blockedEvents.length);
-  console.log('[timeSlots] blockedEvents sample=', blockedEvents.slice(0, 5));
 
   // 각 이벤트의 timeRanges를 파싱해서 해당 범위의 슬롯을 blocked로 변경
   blockedEvents.forEach((ev) => {
