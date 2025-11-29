@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GoodsItem } from './GoodsItem';
+import { LoginPromptModal } from '../common/LoginPromptModal';
 import type { GoodsData } from '../../services/goodsApi';
+import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
 
 interface CategoryGoodsListProps {
   lendGroupSeq: string;
@@ -12,6 +14,7 @@ export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupS
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     const loadGoods = async () => {
@@ -54,6 +57,12 @@ export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupS
   }, [lendGroupSeq]);
 
   const handleSelectGoods = (id: string) => {
+    // 로그인 체크
+    if (!isUserLoggedIn()) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
     // 선택된 기자재 찾기
     const selectedGoods = goods.find(item => item.id === id);
 
@@ -63,6 +72,14 @@ export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupS
     } else {
       console.warn('기자재 정보가 없습니다:', id);
     }
+  };
+
+  const handleLogin = () => {
+    redirectToLogin();
+  };
+
+  const handleCloseModal = () => {
+    setShowLoginPrompt(false);
   };
 
   if (loading) {
@@ -112,18 +129,28 @@ export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupS
   }
 
   return (
-    <div className="goods-list" style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(700px, 1fr))',
-      gap: '20px',
-    }}>
-      {goods.map(item => (
-        <GoodsItem
-          key={item.id}
-          {...item}
-          onSelect={handleSelectGoods}
+    <>
+      <div className="goods-list" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(700px, 1fr))',
+        gap: '20px',
+      }}>
+        {goods.map(item => (
+          <GoodsItem
+            key={item.id}
+            {...item}
+            onSelect={handleSelectGoods}
+          />
+        ))}
+      </div>
+
+      {/* 로그인 프롬프트 모달 */}
+      {showLoginPrompt && (
+        <LoginPromptModal
+          onClose={handleCloseModal}
+          onLogin={handleLogin}
         />
-      ))}
-    </div>
+      )}
+    </>
   );
 };
