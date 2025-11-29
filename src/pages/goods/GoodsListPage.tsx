@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MemoryRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import { Layout } from '../../components/layout/Layout';
 import { GoodsList } from '../../components/goods/GoodsList';
@@ -30,8 +30,6 @@ const MyListPage: React.FC = () => {
 
 // 라우터 컨텐츠
 const GoodsRoutes: React.FC = () => {
-  const [searchText, setSearchText] = useState('');
-
   return (
     <Layout title="">
       <div className="goods-list-page" style={{
@@ -41,65 +39,6 @@ const GoodsRoutes: React.FC = () => {
       }}>
         {/* 카테고리 메뉴 - 모든 페이지에서 공통으로 표시 */}
         <CategoryMenu />
-
-        {/* 검색 & 필터 섹션 */}
-        <div style={{
-          background: 'white',
-          padding: '20px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-          marginBottom: '24px',
-          display: 'flex',
-          gap: '12px',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-        }}>
-          <div style={{ flex: '1', minWidth: '250px' }}>
-            <input
-              type="text"
-              placeholder="🔍 기자재명 또는 모델명으로 검색..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                border: '2px solid #e5e7eb',
-                borderRadius: '8px',
-                fontSize: '15px',
-                outline: 'none',
-                transition: 'border-color 0.2s',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#0066cc';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = '#e5e7eb';
-              }}
-            />
-          </div>
-          <button
-            onClick={() => setSearchText('')}
-            style={{
-              padding: '12px 24px',
-              background: '#f3f4f6',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '15px',
-              fontWeight: '600',
-              color: '#4b5563',
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#e5e7eb';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#f3f4f6';
-            }}
-          >
-            초기화
-          </button>
-        </div>
 
         {/* 안내 정보 */}
         <div style={{

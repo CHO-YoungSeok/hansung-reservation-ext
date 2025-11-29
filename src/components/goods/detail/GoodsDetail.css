@@ -73,10 +73,17 @@
   padding: 16px;
   border-radius: 12px;
   border-left: 4px solid #3b82f6;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 700;
   color: #1e40af;
   line-height: 1.6;
   margin-top: 16px;
+}
+
+.goods-info-guide p,
+.goods-info-guide span {
+  font-size: 15px;
+  font-weight: 700;
 }
 
 /* =========================================================
@@ -107,7 +114,7 @@
 }
 
 .section-title {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
   color: #1d4ed8;
   margin-bottom: 16px;
@@ -212,26 +219,30 @@
 
 /* 상태별 색상 */
 .slot-btn.available {
-  background: #f3f4f6;
-  color: #4b5563;
-  border-color: #e5e7eb;
+  background: #e5e7eb;
+  color: #374151;
+  border-color: #d1d5db;
+  font-weight: 600;
 }
 
 .slot-btn.available:hover {
-  opacity: 0.85;
+  background: #d1d5db;
+  border-color: #9ca3af;
 }
 
 .slot-btn.blocked {
-  background: #fee2e2;
+  background: #fecaca;
   color: #dc2626;
-  border-color: #fecaca;
+  border-color: #f87171;
   cursor: not-allowed;
+  font-weight: 600;
 }
 
 .slot-btn.selected {
-  background: #22c55e;
-  color: white;
-  border-color: #16a34a;
+  background: #4ade80;
+  color: #ffffff;
+  border-color: #22c55e;
+  font-weight: 700;
 }
 
 /* =========================================================
@@ -258,15 +269,18 @@
 }
 
 .legend-box.available {
-  background: #f3f4f6;
+  background: #e5e7eb;
+  border: 1px solid #d1d5db;
 }
 
 .legend-box.blocked {
-  background: #fee2e2;
+  background: #fecaca;
+  border: 1px solid #f87171;
 }
 
 .legend-box.selected {
-  background: #22c55e;
+  background: #4ade80;
+  border: 1px solid #22c55e;
 }
 
 /* =========================================================
@@ -332,6 +346,42 @@
 
 .btn-submit:hover {
   opacity: 0.9;
+}
+
+/* =========================================================
+   정보 동의 및 섹션 콘텐츠
+========================================================= */
+.section-content,
+.wrap_agree {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.section-content p,
+.wrap_agree p,
+.section-content span,
+.wrap_agree span {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.wrap_agree h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1d4ed8;
+}
+
+.wrap_agree strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.caution_icon_5 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #dc2626;
 }
 
 /* =========================================================
