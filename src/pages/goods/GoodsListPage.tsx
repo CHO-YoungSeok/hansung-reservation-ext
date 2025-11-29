@@ -4,7 +4,7 @@ import { Layout } from '../../components/layout/Layout';
 import { GoodsList } from '../../components/goods/GoodsList';
 import { CategoryMenu } from '../../components/goods/CategoryMenu';
 import { CategoryGoodsList } from '../../components/goods/CategoryGoodsList';
-import { GoodsDetailPage } from '../../components/goods/GoodsDetailPage';
+import { GoodsDetailPage } from './GoodsDetailPage';
 
 // 카테고리별 기자재 목록 페이지
 const CategoryPage: React.FC = () => {

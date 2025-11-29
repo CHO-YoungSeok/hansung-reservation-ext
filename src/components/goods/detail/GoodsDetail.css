@@ -1,0 +1,347 @@
+/* =========================================================
+   전체 레이아웃
+========================================================= */
+#lendTimeTable {
+  display: none !important;
+}
+.goods-detail-layout {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+/* 좌측 + 우측 */
+.goods-detail-grid {
+  width: 1200px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 28px;
+  padding: 36px 0;
+
+  /* 핵심: 오른쪽 패널이 넓어지지 않도록 */
+  min-width: 0;
+}
+
+/* =========================================================
+   왼쪽 사이드
+========================================================= */
+.goods-detail-sidebar {
+  position: sticky;
+  top: 24px;
+  height: fit-content;
+}
+
+.goods-info-card {
+  background: #f0f7ff;
+  padding: 26px 24px;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(59,130,246,0.08);
+  border: 1px solid #dbeafe;
+}
+
+.goods-info-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+}
+
+.goods-info-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.goods-info-table th {
+  width: 90px;
+  padding: 10px 0;
+  text-align: left;
+  color: #475569;
+  font-size: 14px;
+}
+
+.goods-info-table td {
+  padding: 10px 2px;
+  color: #1e3a8a;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* 신청안내 */
+.goods-info-guide {
+  background: #eff6ff;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #3b82f6;
+  font-size: 14px;
+  color: #1e40af;
+  line-height: 1.6;
+  margin-top: 16px;
+}
+
+/* =========================================================
+   오른쪽 메인
+========================================================= */
+.goods-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  /* 핵심: 오른쪽 패널이 늘어나지 않게 함 */
+  min-width: 0;
+  max-width: 100%;
+
+  /* 전체 스크롤 금지 → 내부만 스크롤 */
+  overflow-x: hidden;
+}
+
+.goods-section {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 10px 30px rgba(59,130,246,0.08);
+  max-width: 100;  
+  overflow-x: hidden; 
+  min-width: 0;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================================
+   날짜 선택
+========================================================= */
+.date-input {
+  width: 240px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  color: #1d4ed8;
+  font-size: 15px;
+}
+
+.date-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* =========================================================
+   예약 시간표 (핵심!)
+========================================================= */
+
+/* 외부 박스는 고정 */
+.goods-time-area {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 내부에서만 스크롤 */
+.goods-timetable-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 12px;
+}
+
+.goods-timetable-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+.goods-timetable-scroll::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 6px;
+}
+.goods-timetable-scroll::-webkit-scrollbar-track {
+  background: #eef2ff;
+}
+
+/* 테이블 전체 */
+.goods-time-button-table {
+  border-collapse: collapse;
+
+  /* 시간표가 아무리 커져도 부모는 늘어나지 않음 */
+  width: max-content;
+  min-width: 1400px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 헤더 (09:30 형태) */
+.goods-time-button-table th {
+  padding: 12px 14px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  white-space: nowrap;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 품목 라벨 */
+.goods-item-label {
+  white-space: nowrap;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a8a;
+  border: 1px solid #dbeafe;
+}
+
+/* 슬롯 버튼 */
+.slot-btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  width: 100px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+/* 상태별 색상 */
+.slot-btn.available {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #e5e7eb;
+}
+
+.slot-btn.available:hover {
+  opacity: 0.85;
+}
+
+.slot-btn.blocked {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+  cursor: not-allowed;
+}
+
+.slot-btn.selected {
+  background: #22c55e;
+  color: white;
+  border-color: #16a34a;
+}
+
+/* =========================================================
+   Legend (신청가능/불가/선택)
+========================================================= */
+.time-legend {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.legend-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.legend-box.available {
+  background: #f3f4f6;
+}
+
+.legend-box.blocked {
+  background: #fee2e2;
+}
+
+.legend-box.selected {
+  background: #22c55e;
+}
+
+/* =========================================================
+   기본 신청서 (Space UI 스타일)
+========================================================= */
+.default-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px 32px;
+  margin-top: 12px;
+}
+
+.default-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.default-form-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.required {
+  color: #dc2626;
+  margin-left: 4px;
+}
+
+.default-form-input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  font-size: 15px;
+  background: white;
+  color: #1e3a8a;
+}
+
+.default-form-input.readonly {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   제출 버튼
+========================================================= */
+.submit-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.btn-submit {
+  padding: 14px 36px;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  opacity: 0.9;
+}
+
+/* =========================================================
+   반응형
+========================================================= */
+@media (max-width: 860px) {
+  .goods-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .goods-detail-sidebar {
+    position: relative;
+  }
+}
