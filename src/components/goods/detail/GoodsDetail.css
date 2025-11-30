@@ -351,6 +351,7 @@
   display: flex;
   justify-content: center;
   margin-top: 10px;
+   pointer-events: none !important;
 }
 
 .btn-submit {
@@ -361,7 +362,10 @@
   font-size: 17px;
   border: none;
   cursor: pointer;
+  pointer-events: auto !important;
 }
+
+
 
 .btn-submit:hover {
   opacity: 0.9;

@@ -72,6 +72,8 @@ export const GoodsDetailPage: React.FC = () => {
       const html = await response.text();
 
       const doc = new DOMParser().parseFromString(html, "text/html");
+      
+
 
       // 로그인 체크
       if (
@@ -85,6 +87,25 @@ export const GoodsDetailPage: React.FC = () => {
       }
 
       const fnct = doc.querySelector("._fnctWrap") as HTMLElement;
+      // 🔥 학교 원본 버튼 완전 제거
+      const oldSubmit = fnct.querySelector("input[type='submit']");
+      if (oldSubmit) {
+        console.log("🧹 원본 submit 버튼 제거함");
+        oldSubmit.remove();
+      }
+
+      const oldBtnWrapper = fnct.querySelector(".center.board-button");
+      if (oldBtnWrapper) {
+        console.log("🧹 원본 버튼 wrapper 제거함 (.center.board-button)");
+        oldBtnWrapper.remove();
+      }
+
+      const oldBtnWrapper2 = fnct.querySelector(".board-button");
+      if (oldBtnWrapper2) {
+        console.log("🧹 원본 버튼 wrapper 제거함 (.board-button)");
+        oldBtnWrapper2.remove();
+      }
+
 
       setForm(fnct.querySelector("form[name='actionForm']") as HTMLFormElement);
       setTitle(fnct.querySelector("h2.objHeading_h2")?.textContent?.trim() ?? "");
@@ -98,7 +119,12 @@ export const GoodsDetailPage: React.FC = () => {
 
       if (today?.value) setSelectedDate(today.value);
 
+      console.log("[GoodsDetailPage] Form 객체:", fnct.querySelector("form[name='actionForm']"));
+      console.log("[GoodsDetailPage] Form action:", fnct.querySelector("form[name='actionForm']")?.getAttribute("action"));
+
       setLoading(false);
+      // 🔥 화면을 가리는 overlay 제거
+
     };
 
     load();
@@ -140,6 +166,22 @@ export const GoodsDetailPage: React.FC = () => {
 
     load();
   }, [selectedDate]);
+    /*──────────────────────────────
+    4) 원본 form을 실제 DOM에 붙이기 (방법 A 핵심)
+  ──────────────────────────────*/
+  useEffect(() => {
+    if (!form) return;
+
+    // 이미 DOM에 붙어 있는지 확인 (중복 방지)
+    const existing = document.querySelector("form[name='actionForm']");
+    if (!existing) {
+      console.log("📌 원본 actionForm을 실제 DOM에 추가했습니다.");
+      document.body.appendChild(form);
+    }
+    const oldBar = document.querySelector(".submit-bar");
+    if (oldBar) oldBar.remove();
+  }, [form]);
+
 
   /*──────────────────────────────*/
   if (loading) return <div style={{ padding: 40 }}>불러오는 중...</div>;
@@ -199,7 +241,7 @@ function extractSection(root: HTMLElement, title: string) {
 }
 
 function extractDefaultFormOnly(root: HTMLElement) {
-  const headers = Array.from(root.querySelectorAll("h2.objHeading_h2"));
+  const headers = Array.from(root.querySelectorAll( "h2.objHeading_h2"));
   const target = headers.find((h2) => h2.textContent?.includes("기본신청서"));
   if (!target) return "";
   let html = "";

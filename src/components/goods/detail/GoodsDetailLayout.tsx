@@ -8,6 +8,7 @@ interface Props {
 
 export const GoodsDetailLayout: React.FC<Props> = ({ sidebar, children }) => {
   return (
+    
     <div className="goods-detail-layout">
       <div className="goods-detail-grid">
         <aside className="goods-detail-sidebar">{sidebar}</aside>

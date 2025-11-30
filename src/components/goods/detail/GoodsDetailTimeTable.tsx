@@ -202,6 +202,29 @@ export const GoodsDetailTimeTable: React.FC<Props> = ({
       triggerFlash(item, attemptedSlots);
       return;
     }
+    // ★★★ 선택된 값 form에 반영 ★★★
+    const form = document.querySelector("form[name='actionForm']") as HTMLFormElement;
+    if (form) {
+      form.querySelector<HTMLInputElement>("#prdlst")!.value = item.prdlstNm;
+      form.querySelector<HTMLInputElement>("#lendPrdlstSeq")!.value = String(item.lendPrdlstSeq);
+      form.querySelector<HTMLInputElement>("#lendBgndeStr")!.value = selectedDate;
+      form.querySelector<HTMLInputElement>("#lendBgnTm")!.value = startTime;
+
+      // 종료 계산
+      const endDateObj = getProjectedEndTime(selectedDate, startTime, useHours);
+      const yyyy = endDateObj.getFullYear();
+      const mm = String(endDateObj.getMonth() + 1).padStart(2, "0");
+      const dd = String(endDateObj.getDate()).padStart(2, "0");
+      const hh = String(endDateObj.getHours()).padStart(2, "0");
+      const mi = String(endDateObj.getMinutes()).padStart(2, "0");
+
+      form.querySelector<HTMLInputElement>("#lendEnddeStr")!.value = `${yyyy}-${mm}-${dd}`;
+      form.querySelector<HTMLInputElement>("#lendEndTm")!.value = `${hh}:${mi}`;
+      form.querySelector<HTMLInputElement>("#lendUseTime")!.value = String(useHours);
+    }
+
+    console.log("✔ form hidden input들 업데이트 완료");
+
 
     setSelected({ item: item.prdlstNm, times: result });
     console.log("선택 완료!");

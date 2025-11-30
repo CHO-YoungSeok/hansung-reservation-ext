@@ -1,98 +1,127 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { GoodsItem } from './GoodsItem';
 import { LoginPromptModal } from '../common/LoginPromptModal';
 import type { GoodsData } from '../../services/goodsApi';
 import { getDefaultGoods } from '../../services/goodsApi';
-
 import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
 
 export const GoodsList: React.FC = () => {
   const navigate = useNavigate();
-
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      setLoading(true);
-
-      // 기자재 데이터 로드 (로그인 체크 없이)
+    const loadGoods = async () => {
       try {
-        const { fetchGoodsFromCurrentPage } = await import(
-          '../../../entrypoints/content-script/fetch/goodsList'
-        );
+        setLoading(true);
+        setError(null);
 
-        const data = await fetchGoodsFromCurrentPage();
-        setGoods(data.length > 0 ? data : getDefaultGoods());
+        // content script 환경에서는 직접 페이지에서 데이터 추출
+        // fetchGoodsFromCurrentPage는 async 함수이므로 await 필요
+        try {
+          const { fetchGoodsFromCurrentPage } = await import(
+            '../../../entrypoints/content-script/fetch/goodsList'
+          );
+
+          console.log('📡 기자재 데이터 가져오는 중...');
+          const data = await fetchGoodsFromCurrentPage();
+          console.log('✅ 현재 페이지에서 추출한 기자재 정보:', data);
+
+          // 데이터가 없으면 기본값 사용
+          setGoods(data.length > 0 ? data : getDefaultGoods());
+        } catch (importError) {
+          console.warn('⚠️ fetch 모듈 import 실패, 기본값 사용:', importError);
+          setGoods(getDefaultGoods());
+        }
       } catch (err) {
-        console.error(err);
-        setError("데이터를 불러올 수 없습니다.");
+        console.error('Error loading goods:', err);
+        setError('데이터를 불러올 수 없습니다. 기본 목록을 표시합니다.');
         setGoods(getDefaultGoods());
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
-    init();
+    loadGoods();
   }, []);
 
   const handleSelectGoods = (id: string) => {
-    // 로그인 체크 - 상세 페이지 진입 시에만
-    const loggedIn = isUserLoggedIn();
-    if (!loggedIn) {
+    // 로그인 체크
+    if (!isUserLoggedIn()) {
       setShowLoginPrompt(true);
       return;
     }
 
-    const selected = goods.find(g => g.id === id);
-    if (!selected) return;
+    // 선택된 기자재 찾기
+    const selectedGoods = goods.find(item => item.id === id);
 
-    navigate(`/detail/${selected.lendGroupSeq}/${selected.lendMhrmlSeq}`);
+    if (selectedGoods && selectedGoods.lendGroupSeq && selectedGoods.lendMhrmlSeq) {
+      // 상세 페이지로 이동
+      navigate(`/detail/${selectedGoods.lendGroupSeq}/${selectedGoods.lendMhrmlSeq}`);
+    } else {
+      console.warn('기자재 정보가 없습니다:', id, selectedGoods);
+    }
   };
 
-  const handleLogin = () => redirectToLogin();
+  const handleLogin = () => {
+    redirectToLogin();
+  };
 
-  if (loading)
+  const handleCloseModal = () => {
+    setShowLoginPrompt(false);
+  };
+
+  if (loading) {
     return (
-      <div style={{ padding: 30 }}>기자재 목록을 불러오는 중...</div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '300px',
+        fontSize: '16px',
+        color: '#6b7280',
+      }}>
+        기자재 목록을 불러오는 중...
+      </div>
     );
+  }
 
   return (
     <>
-      {/* 에러 메시지 */}
       {error && (
         <div style={{
-          padding: "12px",
-          backgroundColor: "#fee2e2",
-          borderRadius: "6px",
-          marginBottom: "12px"
+          padding: '12px',
+          marginBottom: '16px',
+          backgroundColor: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '6px',
+          color: '#991b1b',
+          fontSize: '14px',
         }}>
           {error}
         </div>
       )}
-
-      {/* 기자재 리스트 */}
-      <div
-        className="goods-list"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(700px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {goods.map((g) => (
-          <GoodsItem key={g.id} {...g} onSelect={handleSelectGoods} />
+      <div className="goods-list" style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(700px, 1fr))',
+        gap: '20px',
+      }}>
+        {goods.map(item => (
+          <GoodsItem
+            key={item.id}
+            {...item}
+            onSelect={handleSelectGoods}
+          />
         ))}
       </div>
 
-      {/* 로그인 모달 */}
+      {/* 로그인 프롬프트 모달 */}
       {showLoginPrompt && (
         <LoginPromptModal
-          onClose={() => setShowLoginPrompt(false)}
+          onClose={handleCloseModal}
           onLogin={handleLogin}
         />
       )}
