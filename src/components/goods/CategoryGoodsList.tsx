@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 import { GoodsItem } from './GoodsItem';
 import { LoginPromptModal } from '../common/LoginPromptModal';
 import type { GoodsData } from '../../services/goodsApi';
-import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
+
+import { checkLoginFromServer, redirectToLogin } from '../../utils/authUtils';
 
 interface CategoryGoodsListProps {
   lendGroupSeq: string;
@@ -11,144 +13,91 @@ interface CategoryGoodsListProps {
 
 export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupSeq }) => {
   const navigate = useNavigate();
+
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadGoods = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    const init = async () => {
+      setLoading(true);
 
-        // 카테고리별 URL 생성
+      // 1) 로그인 체크
+      const loggedIn = await checkLoginFromServer();
+      if (!loggedIn) {
+        setShowLoginPrompt(true);
+        setLoading(false);
+        return;
+      }
+
+      // 2) 로그인 OK → 카테고리 데이터 fetch
+      try {
         const url = `https://hansung.ac.kr/lend/cncschool/1/${lendGroupSeq}/lendMhrmlList.do`;
 
-        console.log(`📡 카테고리 ${lendGroupSeq} 데이터 가져오는 중...`);
+        const res = await fetch(url);
+        const html = await res.text();
 
-        // HTML 가져오기
-        const response = await fetch(url);
-        const html = await response.text();
-
-        // 동적 import로 파싱 함수 가져오기
         const { parseGoodsFromLendList } = await import(
           '../../../entrypoints/content-script/fetch/goodsList'
         );
 
-        // HTML 파싱
         const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const data = parseGoodsFromLendList(doc.documentElement.outerHTML);
+        const doc = parser.parseFromString(html, "text/html");
 
-        console.log(`✅ 카테고리 ${lendGroupSeq} 데이터 로드 완료:`, data.length, '개');
-
-        setGoods(data);
+        const list = parseGoodsFromLendList(doc.documentElement.outerHTML);
+        setGoods(list);
       } catch (err) {
-        console.error('Error loading category goods:', err);
-        setError('데이터를 불러올 수 없습니다.');
+        console.error(err);
+        setError("데이터를 불러올 수 없습니다.");
         setGoods([]);
-      } finally {
-        setLoading(false);
       }
+
+      setLoading(false);
     };
 
-    loadGoods();
+    init();
   }, [lendGroupSeq]);
 
   const handleSelectGoods = (id: string) => {
-    // 로그인 체크
-    if (!isUserLoggedIn()) {
-      setShowLoginPrompt(true);
-      return;
-    }
+    const g = goods.find(x => x.id === id);
+    if (!g) return;
 
-    // 선택된 기자재 찾기
-    const selectedGoods = goods.find(item => item.id === id);
-
-    if (selectedGoods && selectedGoods.lendGroupSeq && selectedGoods.lendMhrmlSeq) {
-      // 상세 페이지로 이동
-      navigate(`/detail/${selectedGoods.lendGroupSeq}/${selectedGoods.lendMhrmlSeq}`);
-    } else {
-      console.warn('기자재 정보가 없습니다:', id);
-    }
+    navigate(`/detail/${g.lendGroupSeq}/${g.lendMhrmlSeq}`);
   };
 
-  const handleLogin = () => {
-    redirectToLogin();
-  };
-
-  const handleCloseModal = () => {
-    setShowLoginPrompt(false);
-  };
-
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '300px',
-        fontSize: '16px',
-        color: '#6b7280',
-      }}>
-        기자재 목록을 불러오는 중...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{
-        padding: '12px',
-        marginBottom: '16px',
-        backgroundColor: '#fef2f2',
-        border: '1px solid #fecaca',
-        borderRadius: '6px',
-        color: '#991b1b',
-        fontSize: '14px',
-      }}>
-        {error}
-      </div>
-    );
-  }
-
-  if (goods.length === 0) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '300px',
-        fontSize: '16px',
-        color: '#6b7280',
-      }}>
-        등록된 기자재가 없습니다.
-      </div>
-    );
-  }
+  if (loading) return <div style={{ padding: 30 }}>불러오는 중...</div>;
 
   return (
     <>
-      <div className="goods-list" style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(700px, 1fr))',
-        gap: '20px',
-      }}>
-        {goods.map(item => (
-          <GoodsItem
-            key={item.id}
-            {...item}
-            onSelect={handleSelectGoods}
-          />
+      {error && (
+        <div style={{
+          padding: 12,
+          background: "#fee2e2",
+          borderRadius: 6,
+          marginBottom: 12
+        }}>
+          {error}
+        </div>
+      )}
+
+      <div
+        className="goods-list"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(700px, 1fr))",
+          gap: "20px",
+        }}
+      >
+        {goods.map((g) => (
+          <GoodsItem key={g.id} {...g} onSelect={handleSelectGoods} />
         ))}
       </div>
 
-      {/* 로그인 프롬프트 모달 */}
       {showLoginPrompt && (
         <LoginPromptModal
-          onClose={handleCloseModal}
-          onLogin={handleLogin}
+          onClose={() => setShowLoginPrompt(false)}
+          onLogin={() => redirectToLogin()}
         />
       )}
     </>

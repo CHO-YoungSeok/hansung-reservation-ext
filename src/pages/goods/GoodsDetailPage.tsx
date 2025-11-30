@@ -8,133 +8,207 @@ import {
   GoodsDetailDatePicker,
   GoodsDetailTimeTable,
   GoodsDetailAgreement,
-  GoodsDetailSubmitBar
+  GoodsDetailSubmitBar,
 } from "../../components/goods/detail";
 
 import "../../components/goods/detail/GoodsDetail.css";
+
+/*──────────────────────────────
+  학교 getLendArtcl.do AJAX 호출
+──────────────────────────────*/
+async function fetchTimeTable(
+  siteId: string,
+  setupSeq: string,
+  groupSeq: string,
+  machineSeq: string,
+  date: string
+) {
+  const url = `https://hansung.ac.kr/lend/${siteId}/${setupSeq}/${groupSeq}/${machineSeq}/getLendArtcl.do`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      lendSetupSeq: setupSeq,
+      lendGroupSeq: groupSeq,
+      lendMhrmlSeq: machineSeq,
+      today: date,
+    }).toString(),
+  });
+
+  return await res.text(); // JSON string
+}
 
 export const GoodsDetailPage: React.FC = () => {
   const { lendGroupSeq, lendMhrmlSeq } = useParams();
 
   const [loading, setLoading] = useState(true);
+  const [needLogin, setNeedLogin] = useState(false);
 
   const [form, setForm] = useState<HTMLFormElement | null>(null);
-
   const [title, setTitle] = useState("");
-  const [summaryHTML, setSummaryHTML] = useState(""); // 신청대상/담당자/연락처 테이블
-  const [guideHTML, setGuideHTML] = useState(""); // 신청 안내
-
+  const [summaryHTML, setSummaryHTML] = useState("");
+  const [guideHTML, setGuideHTML] = useState("");
   const [defaultFormHTML, setDefaultFormHTML] = useState("");
-  const [timeTable, setTimeTable] = useState("");
   const [agreementHTML, setAgreementHTML] = useState("");
 
   const [todayInput, setTodayInput] = useState<HTMLInputElement | null>(null);
+  const [selectedDate, setSelectedDate] = useState("");
 
+  const [timeTableData, setTimeTableData] = useState<any>(null);
+  const [useHours, setUseHours] = useState<number>(1); // 예상사용시간
+
+  /*──────────────────────────────
+    1) 초기 전체 HTML 로딩
+  ──────────────────────────────*/
   useEffect(() => {
-    const load = async () => {
-      const url = `https://hansung.ac.kr/lend/cncschool/1/${lendGroupSeq}/${lendMhrmlSeq}/lendMhrmlRegistView.do`;
+    if (!lendGroupSeq || !lendMhrmlSeq) return;
 
+    const load = async () => {
+      setLoading(true);
+
+      const url = `https://hansung.ac.kr/lend/cncschool/1/${lendGroupSeq}/${lendMhrmlSeq}/lendMhrmlRegistView.do`;
       const response = await fetch(url);
       const html = await response.text();
 
       const doc = new DOMParser().parseFromString(html, "text/html");
+
+      // 로그인 체크
+      if (
+        doc.querySelector("#loginView") ||
+        doc.querySelector("form[name='loginView']") ||
+        doc.querySelector(".hnu_login")
+      ) {
+        setNeedLogin(true);
+        setLoading(false);
+        return;
+      }
+
       const fnct = doc.querySelector("._fnctWrap") as HTMLElement;
 
-      if (!fnct) return;
-
-      setForm(fnct.querySelector("form[name='actionForm']") as HTMLFormElement | null);
-
-      const h2 = fnct.querySelector("h2.objHeading_h2");
-      setTitle(h2?.textContent?.trim() ?? "");
-
-      const summaryTable = fnct.querySelector(".table_form table");
-      setSummaryHTML(summaryTable?.outerHTML ?? "");
-
+      setForm(fnct.querySelector("form[name='actionForm']") as HTMLFormElement);
+      setTitle(fnct.querySelector("h2.objHeading_h2")?.textContent?.trim() ?? "");
+      setSummaryHTML(fnct.querySelector(".table_form table")?.outerHTML ?? "");
       setGuideHTML(extractSection(fnct, "신청안내"));
       setDefaultFormHTML(extractDefaultFormOnly(fnct));
-
-      const table = fnct.querySelector("#lendTimeTable");
-      setTimeTable(table?.outerHTML ?? "");
-
       setAgreementHTML(fnct.querySelector(".wrap_agree")?.outerHTML ?? "");
 
-      setTodayInput(fnct.querySelector("#today") as HTMLInputElement | null);
+      const today = fnct.querySelector("#today") as HTMLInputElement | null;
+      setTodayInput(today);
+
+      if (today?.value) setSelectedDate(today.value);
+
       setLoading(false);
     };
 
     load();
   }, [lendGroupSeq, lendMhrmlSeq]);
 
+  /*──────────────────────────────
+    2) addItem1 = 예상사용시간 읽어오기
+  ──────────────────────────────*/
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const el = document.querySelector("input[name='addItem1']") as HTMLInputElement;
+      if (el) {
+        const val = parseInt(el.value);
+        if (!isNaN(val)) setUseHours(val);
+      }
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  /*──────────────────────────────
+    3) 날짜 변경 시 AJAX 다시 로드
+  ──────────────────────────────*/
+  useEffect(() => {
+    if (!selectedDate) return;
+
+    const load = async () => {
+      const jsonStr = await fetchTimeTable(
+        "cncschool",
+        "1",
+        lendGroupSeq!,
+        lendMhrmlSeq!,
+        selectedDate
+      );
+
+      const data = JSON.parse(jsonStr);
+      setTimeTableData(data);
+    };
+
+    load();
+  }, [selectedDate]);
+
+  /*──────────────────────────────*/
   if (loading) return <div style={{ padding: 40 }}>불러오는 중...</div>;
+
+  if (needLogin)
+    return (
+      <div style={{ padding: 40, fontSize: 20, textAlign: "center" }}>
+        🔐 로그인 후 이용해 주세요.
+      </div>
+    );
 
   return (
     <GoodsDetailLayout
-      sidebar={
-        <GoodsDetailInfo
-          title={title}
-          summaryHTML={summaryHTML}
-        />
-      }
+      sidebar={<GoodsDetailInfo title={title} summaryHTML={summaryHTML} />}
     >
-
-      {/* 오른쪽 메인 영역 */}
-
-      
-
-      {/* 신청 안내 (오른쪽으로 이동됨) */}
       <section className="goods-section">
         <h3 className="section-title">신청안내</h3>
-        <div
-          className="goods-info-guide"
-          dangerouslySetInnerHTML={{ __html: guideHTML }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: guideHTML }} />
       </section>
-      <GoodsDetailDefaultForm html={defaultFormHTML} />
 
-      <GoodsDetailDatePicker todayInput={todayInput} />
+      <GoodsDetailDefaultForm
+        html={defaultFormHTML}
+        onUseHoursChange={(h) => setUseHours(h)}
+      />
 
-      <GoodsDetailTimeTable html={timeTable} />
+      <GoodsDetailDatePicker
+        todayInput={todayInput}
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
+      />
+
+      {/* ★ 핵심: JSON + 선택날짜 + 예상시간 전송 */}
+      <GoodsDetailTimeTable
+        data={timeTableData}
+        selectedDate={selectedDate}
+        useHours={useHours}
+      />
 
       <GoodsDetailAgreement html={agreementHTML} />
-
       <GoodsDetailSubmitBar form={form} />
     </GoodsDetailLayout>
   );
 };
 
-/*──── 섹션 추출 함수들 ─────────────────────────────────────────*/
-
-function extractSection(root: HTMLElement, title: string): string {
+/*──────────────────────────────*/
+function extractSection(root: HTMLElement, title: string) {
   const headers = Array.from(root.querySelectorAll("h2.objHeading_h2"));
   const target = headers.find((h2) => h2.textContent?.includes(title));
   if (!target) return "";
-
   let html = "";
   let next = target.nextElementSibling;
-
   while (next && next.tagName !== "H2") {
     html += next.outerHTML;
     next = next.nextElementSibling;
   }
-
   return html;
 }
 
-function extractDefaultFormOnly(root: HTMLElement): string {
+function extractDefaultFormOnly(root: HTMLElement) {
   const headers = Array.from(root.querySelectorAll("h2.objHeading_h2"));
   const target = headers.find((h2) => h2.textContent?.includes("기본신청서"));
   if (!target) return "";
-
   let html = "";
   let next = target.nextElementSibling;
-
   while (next && next.tagName !== "H2") {
     if (next.id === "lendTimeTable" || next.textContent?.includes("예약현황"))
       break;
-
     html += next.outerHTML;
     next = next.nextElementSibling;
   }
-
   return html;
 }

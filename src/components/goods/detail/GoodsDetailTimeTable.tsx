@@ -1,126 +1,107 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./GoodsDetail.css";
 
 interface Props {
-  html: string;
+  data: any;
+  selectedDate: string;
+  useHours: number; // 예상사용시간
 }
 
-export const GoodsDetailTimeTable: React.FC<Props> = ({ html }) => {
-  const [grid, setGrid] = useState<string[][]>([]);
-  const [header, setHeader] = useState<string[]>([]);
-  const [selected, setSelected] = useState<{ item: string; time: string }[]>([]);
+export const GoodsDetailTimeTable: React.FC<Props> = ({
+  data,
+  selectedDate,
+  useHours,
+}) => {
+  const [selected, setSelected] = useState<{
+    item: string;
+    times: string[];
+  }>({ item: "", times: [] });
 
-  useEffect(() => {
-    if (!html) return;
+  if (!data) return <div>시간표 불러오는 중...</div>;
 
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const table = doc.querySelector("table");
-    if (!table) return;
+  const times: string[] = data.lendTm.split(",");
+  const items = data.lendPrdlstList;
+  const used = data.lendArtclList;
 
-    // --- 헤더 파싱 ---
-    const ths = Array.from(table.querySelectorAll("th")).map((th) =>
-      th.textContent?.replace(/\s+/g, "").trim() ?? ""
-    );
-    setHeader(ths);
+  /** 이미 예약되었는지 체크 */
+  function isDisabled(itemSeq: number, date: string, time: string) {
+    const now = new Date();
+    const current = new Date(`${date} ${time}`);
+    if (current <= now) return true;
 
-    // --- 데이터 파싱 ---
-    const rows: string[][] = [];
-    const trs = Array.from(table.querySelectorAll("tr")).slice(1);
+    for (const a of used) {
+      if (a.lendPrdlstSeq !== itemSeq) continue;
 
-    trs.forEach((tr) => {
-      const row = Array.from(tr.querySelectorAll("td")).map((td) =>
-        td.textContent?.replace(/\s+/g, "").trim() ?? ""
-      );
-      rows.push(row);
-    });
+      const start = new Date(`${a.lendBgnde} ${a.lendBgnTm}`);
+      const end = new Date(`${a.lendEndde} ${a.lendEndTm}`);
 
-    setGrid(rows);
-  }, [html]);
+      if (current >= start && current < end) return true;
+    }
+    return false;
+  }
 
-  const toggle = (item: string, time: string, disabled: boolean) => {
-    if (disabled) return;
+  /** 🔥 시간 선택 시 자동 확장 */
+  const handleSelect = (item: any, startTime: string) => {
+    const idx = times.indexOf(startTime);
+    if (idx === -1) return;
 
-    setSelected((prev) => {
-      const exists = prev.some((s) => s.item === item && s.time === time);
-      if (exists) return prev.filter((s) => !(s.item === item && s.time === time));
-      return [...prev, { item, time }];
-    });
+    const result: string[] = [];
+
+    for (let i = 0; i < useHours; i++) {
+      const t = times[idx + i];
+      if (!t) break;
+      result.push(t);
+    }
+
+    setSelected({ item: item.prdlstNm, times: result });
   };
 
   return (
     <section className="goods-section">
-
       <h3 className="section-title">예약 가능 시간</h3>
 
-      {/* 🟦 Legend */}
-      <div className="time-legend">
-        <span className="legend-item">
-          <span className="legend-box available"></span> 신청 가능
-        </span>
-        <span className="legend-item">
-          <span className="legend-box blocked"></span> 신청 불가
-        </span>
-        <span className="legend-item">
-          <span className="legend-box selected"></span> 선택됨
-        </span>
-      </div>
+      <table className="goods-time-button-table">
+        <thead>
+          <tr>
+            <th>품목</th>
+            {times.map((t) => (
+              <th key={t}>{t}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item: any) => (
+            <tr key={item.prdlstNm}>
+              <td>{item.prdlstNm}</td>
 
-      <div className="goods-time-area">
-        <div className="goods-timetable-scroll">
+              {times.map((t) => {
+                const disabled = isDisabled(item.lendPrdlstSeq, selectedDate, t);
+                const isSelected =
+                  selected.item === item.prdlstNm &&
+                  selected.times.includes(t);
 
-          <table className="goods-time-button-table">
-
-            <thead>
-              <tr>
-                {header.map((h, idx) => (
-                  <th key={idx}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {grid.map((row, rIdx) => (
-                <tr key={rIdx}>
-                  {row.map((cell, cIdx) => {
-                    const isHeader = cIdx === 0;
-                    const isBlocked = cell === "0";
-                    const isSelected = selected.some(
-                      (s) => s.item === row[0] && s.time === header[cIdx]
-                    );
-
-                    if (isHeader) {
-                      return (
-                        <td key={cIdx} className="goods-item-label">
-                          {cell}
-                        </td>
-                      );
-                    }
-
-                    return (
-                      <td key={cIdx}>
-                        <button
-                          className={
-                            isBlocked
-                              ? "slot-btn blocked"
-                              : isSelected
-                              ? "slot-btn selected"
-                              : "slot-btn available"
-                          }
-                          disabled={isBlocked}
-                          onClick={() => toggle(row[0], header[cIdx], isBlocked)}
-                        >
-                          {header[cIdx]}
-                        </button>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-
-          </table>
-        </div>
-      </div>
+                return (
+                  <td key={t}>
+                    <button
+                      disabled={disabled}
+                      className={
+                        disabled
+                          ? "slot-btn blocked"
+                          : isSelected
+                          ? "slot-btn selected"
+                          : "slot-btn available"
+                      }
+                      onClick={() => handleSelect(item, t)}
+                    >
+                      {t}
+                    </button>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 };
