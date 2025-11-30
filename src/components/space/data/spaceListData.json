@@ -2,7 +2,7 @@
   {
     "id": "64",
     "name": "세미나실(IB111)",
-    "capacity": 4,
+    "capacity": 8,
     "facilities": ["화이트보드"],
     "status": "available",
     "location": "상상관 지하 2층",
