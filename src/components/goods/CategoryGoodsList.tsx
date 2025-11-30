@@ -5,7 +5,7 @@ import { GoodsItem } from './GoodsItem';
 import { LoginPromptModal } from '../common/LoginPromptModal';
 import type { GoodsData } from '../../services/goodsApi';
 
-import { checkLoginFromServer, redirectToLogin } from '../../utils/authUtils';
+import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
 
 interface CategoryGoodsListProps {
   lendGroupSeq: string;
@@ -23,15 +23,7 @@ export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupS
     const init = async () => {
       setLoading(true);
 
-      // 1) 로그인 체크
-      const loggedIn = await checkLoginFromServer();
-      if (!loggedIn) {
-        setShowLoginPrompt(true);
-        setLoading(false);
-        return;
-      }
-
-      // 2) 로그인 OK → 카테고리 데이터 fetch
+      // 카테고리 데이터 fetch (로그인 체크 없이)
       try {
         const url = `https://hansung.ac.kr/lend/cncschool/1/${lendGroupSeq}/lendMhrmlList.do`;
 
@@ -60,6 +52,13 @@ export const CategoryGoodsList: React.FC<CategoryGoodsListProps> = ({ lendGroupS
   }, [lendGroupSeq]);
 
   const handleSelectGoods = (id: string) => {
+    // 로그인 체크 - 상세 페이지 진입 시에만
+    const loggedIn = isUserLoggedIn();
+    if (!loggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
     const g = goods.find(x => x.id === id);
     if (!g) return;
 

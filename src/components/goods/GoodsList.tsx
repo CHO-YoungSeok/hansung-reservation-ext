@@ -6,7 +6,7 @@ import { LoginPromptModal } from '../common/LoginPromptModal';
 import type { GoodsData } from '../../services/goodsApi';
 import { getDefaultGoods } from '../../services/goodsApi';
 
-import { checkLoginFromServer, redirectToLogin } from '../../utils/authUtils';
+import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
 
 export const GoodsList: React.FC = () => {
   const navigate = useNavigate();
@@ -20,15 +20,7 @@ export const GoodsList: React.FC = () => {
     const init = async () => {
       setLoading(true);
 
-      // 1) 로그인 체크
-      const loggedIn = await checkLoginFromServer();
-      if (!loggedIn) {
-        setShowLoginPrompt(true);
-        setLoading(false);
-        return;
-      }
-
-      // 2) 로그인 O → 기자재 데이터 로드
+      // 기자재 데이터 로드 (로그인 체크 없이)
       try {
         const { fetchGoodsFromCurrentPage } = await import(
           '../../../entrypoints/content-script/fetch/goodsList'
@@ -49,6 +41,13 @@ export const GoodsList: React.FC = () => {
   }, []);
 
   const handleSelectGoods = (id: string) => {
+    // 로그인 체크 - 상세 페이지 진입 시에만
+    const loggedIn = isUserLoggedIn();
+    if (!loggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
     const selected = goods.find(g => g.id === id);
     if (!selected) return;
 
