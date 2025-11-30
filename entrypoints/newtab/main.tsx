@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './style.css';
-import mapImage from '/assets/HSU_map.png';
-
-interface Building {
-  id: string;
-  name: string;
-  url: string;
-  position: { top: string; left: string };
-  size: { width: string; height: string };
-}
 
 interface QuickLink {
   name: string;
@@ -17,44 +8,6 @@ interface QuickLink {
   icon: string;
   category: string;
 }
-
-const buildings: Building[] = [
-    {
-        id: 'sangbae',
-        name: '상상베이스',
-        url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
-        position: { top: '33%', left: '53%' },
-        size: { width: '90px', height: '130px' }
-    },
-    {
-    id: 'mirae',
-    name: '미래관',
-    url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
-    position: { top: '40%', left: '70%' },
-    size: { width: '140px', height: '90px' }
-  },
-  {
-    id: 'naksan',
-    name: '낙산관',
-    url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
-    position: { top: '73%', left: '93%' },
-    size: { width: '100px', height: '140px' }
-  },
-  {
-    id: 'gonghak',
-    name: '공학관',
-    url: 'https://hansung.ac.kr/cncschool/7309/subview.do',
-    position: { top: '90%', left: '38%' },
-    size: { width: '140px', height: '80px' }
-  },
-  {
-    id: 'uchon',
-    name: '우촌관',
-    url: 'https://www.hansung.ac.kr/onestop/8952/subview.do',
-    position: { top: '5%', left: '65%' },
-    size: { width: '120px', height: '60px' }
-  },
-];
 
 const quickLinks: QuickLink[] = [
   { name: 'e-class', url: 'https://learn.hansung.ac.kr/', icon: '📚', category: '학습' },
@@ -67,117 +20,204 @@ const quickLinks: QuickLink[] = [
 ];
 
 function NewTab() {
-  const [hoveredBuilding, setHoveredBuilding] = useState<string | null>(null);
-
-  const handleBuildingClick = (url: string) => {
-    window.location.href = url;
-  };
 
   return (
     <div style={{
       display: 'flex',
+      flexDirection: 'column',
       height: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      overflow: 'hidden',
+      background: '#f0f2f5', // Lighter background
+      overflowY: 'auto', // Enable scrolling for content
+      alignItems: 'center', // Center content horizontally
+      padding: '20px',
     }}>
-      {/* 좌측+중앙: 캠퍼스 맵 */}
+      {/* Header section */}
       <div style={{
-        flex: '1',
+        width: '100%',
+        maxWidth: '800px', // Max width for content
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+        padding: '20px 30px',
+        marginBottom: '20px',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px',
+        justifyContent: 'space-between',
       }}>
-        <h1 style={{
-          color: 'white',
-          fontSize: '36px',
-          marginBottom: '30px',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-        }}>
-          🏫 한성대학교 캠퍼스
-        </h1>
-
-        <div style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '900px',
-          height: '600px',
-          background: 'white',
-          borderRadius: '16px',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-          overflow: 'hidden',
-        }}>
-
-          {/* 캠퍼스 맵 이미지 */}
-          <img
-            src={mapImage}
-            alt="한성대학교 캠퍼스 맵"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
-
-          {/* 건물 클릭 영역 */}
-          {buildings.map((building) => (
-            <div
-              key={building.id}
-              onClick={() => handleBuildingClick(building.url)}
-              onMouseEnter={() => setHoveredBuilding(building.id)}
-              onMouseLeave={() => setHoveredBuilding(null)}
-              style={{
-                position: 'absolute',
-                top: building.position.top,
-                left: building.position.left,
-                width: building.size.width,
-                height: building.size.height,
-                transform: 'translate(-50%, -50%)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: hoveredBuilding === building.id
-                  ? 'rgba(102, 126, 234, 0.8)'
-                  : 'rgba(255, 255, 255, 0.3)',
-                border: '2px solid',
-                borderColor: hoveredBuilding === building.id ? '#667eea' : 'rgba(255, 255, 255, 0.5)',
-                borderRadius: '12px',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(4px)',
-              }}
-            >
-              <div style={{
-                color: hoveredBuilding === building.id ? 'white' : '#333',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-                transition: 'color 0.3s ease',
-              }}>
-                {building.name}
-              </div>
-            </div>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src="/icon/48.png" alt="logo" style={{ width: '32px', height: '32px', marginRight: '10px' }} />
+          <div>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>한성대학교 예약 시스템</div>
+            <div style={{ fontSize: '13px', color: '#777' }}>Hansung University Reservation</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          {/* Notification icon */}
+          <div style={{ position: 'relative', cursor: 'pointer' }}>
+            <span style={{ fontSize: '24px', color: '#667eea' }}>🔔</span>
+            <span style={{ position: 'absolute', top: '0', right: '0', width: '8px', height: '8px', backgroundColor: 'red', borderRadius: '50%' }}></span>
+          </div>
+          {/* My Page icon */}
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+            <span style={{ fontSize: '24px', color: '#667eea', marginRight: '5px' }}>👤</span>
+            <span style={{ fontSize: '15px', color: '#333', fontWeight: '500' }}>마이페이지</span>
+          </div>
         </div>
       </div>
 
-
-      {/* 우측: 바로가기 사이드바 */}
+      {/* Two main cards */}
       <div style={{
-        width: '320px',
-        background: 'rgba(255, 255, 255, 0.95)',
-        boxShadow: '-4px 0 24px rgba(0,0,0,0.1)',
-        padding: '30px 20px',
-        overflowY: 'auto',
+        width: '100%',
+        maxWidth: '800px',
+        display: 'flex',
+        gap: '20px',
+        marginBottom: '20px',
+      }}>
+        {/* Card 1: 스터디룸 예약 */}
+        <div style={{
+          flex: 1,
+          background: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+          padding: '25px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          cursor: 'pointer',
+          border: '1px solid #e0e0e0',
+          transition: 'all 0.2s ease',
+        }} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+          <div style={{ fontSize: '30px', background: '#eef2ff', padding: '12px', borderRadius: '10px', color: '#4f46e5' }}>📍</div>
+          <div>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>스터디룸 예약</div>
+            <div style={{ fontSize: '14px', color: '#777' }}>Study Room Reservation</div>
+          </div>
+          <div style={{ marginLeft: 'auto', fontSize: '24px', color: '#999' }}>›</div>
+        </div>
+
+        {/* Card 2: 기자재 대여 */}
+        <div style={{
+          flex: 1,
+          background: '#667eea',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+          padding: '25px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          cursor: 'pointer',
+          border: '1px solid #667eea',
+          color: 'white',
+          transition: 'all 0.2s ease',
+        }} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+          <div style={{ fontSize: '30px', background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '10px', color: 'white' }}>📦</div>
+          <div>
+            <div style={{ fontSize: '18px', fontWeight: 'bold' }}>기자재 대여</div>
+            <div style={{ fontSize: '14px' }}>Equipment Borrowing</div>
+          </div>
+          <div style={{ marginLeft: 'auto', fontSize: '24px' }}>›</div>
+        </div>
+      </div>
+
+      {/* Search and Date Picker */}
+      <div style={{
+        width: '100%',
+        maxWidth: '800px',
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+        padding: '20px 30px',
+        marginBottom: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '15px',
+      }}>
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          border: '1px solid #e0e0e0',
+          borderRadius: '8px',
+          padding: '10px 15px',
+        }}>
+          <span style={{ marginRight: '10px', color: '#999' }}>🔍</span>
+          <input
+            type="text"
+            placeholder="기자재 검색..."
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              fontSize: '15px',
+            }}
+          />
+        </div>
+        <button style={{
+          background: '#4f46e5',
+          color: 'white',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          border: 'none',
+          fontSize: '15px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <span style={{ fontSize: '18px' }}>📅</span> 날짜 선택
+        </button>
+      </div>
+
+      {/* Available Equipment for Rent (Placeholder) */}
+      <div style={{
+        width: '100%',
+        maxWidth: '800px',
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+        padding: '20px 30px',
+        marginBottom: '20px',
+      }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', marginBottom: '15px' }}>대여 가능한 기자재</h2>
+        {/* Placeholder for equipment items */}
+        <div style={{ color: '#999', fontSize: '14px' }}>
+          대여 가능한 기자재 목록이 여기에 표시됩니다.
+        </div>
+      </div>
+
+      {/* My Reservations (Placeholder) */}
+      <div style={{
+        width: '100%',
+        maxWidth: '800px',
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+        padding: '20px 30px',
+        marginBottom: '20px',
+      }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', marginBottom: '15px' }}>나의 예약</h2>
+        {/* Placeholder for reservation items */}
+        <div style={{ color: '#999', fontSize: '14px' }}>
+          나의 예약 내역이 여기에 표시됩니다.
+        </div>
+      </div>
+
+      {/* Quick Links */}
+      <div style={{
+        width: '100%',
+        maxWidth: '800px',
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+        padding: '20px 30px',
+        marginBottom: '20px',
       }}>
         <h2 style={{
-          fontSize: '24px',
+          fontSize: '20px',
           fontWeight: 'bold',
           color: '#333',
           marginBottom: '20px',
-          paddingBottom: '15px',
-          borderBottom: '2px solid #667eea',
         }}>
           ⚡ 빠른 링크
         </h2>
@@ -195,27 +235,27 @@ function NewTab() {
                 display: 'flex',
                 alignItems: 'center',
                 padding: '16px',
-                background: 'white',
+                background: '#f8f8f8',
                 borderRadius: '10px',
                 textDecoration: 'none',
                 color: '#333',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
                 transition: 'all 0.2s ease',
-                border: '1px solid #f0f0f0',
+                border: '1px solid #eee',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateX(5px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.2)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.1)';
                 e.currentTarget.style.borderColor = '#667eea';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateX(0)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-                e.currentTarget.style.borderColor = '#f0f0f0';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)';
+                e.currentTarget.style.borderColor = '#eee';
               }}
             >
               <div style={{
-                fontSize: '32px',
+                fontSize: '28px',
                 marginRight: '15px',
               }}>
                 {link.icon}
@@ -242,25 +282,8 @@ function NewTab() {
                 →
               </div>
             </a>
-
           ))}
-          {/* 안내 텍스트 */}
-          <div style={{
-            position: 'absolute',
-            bottom: '20px',
-            left: '40%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(0, 0, 0, 0.7)',
-            color: 'white',
-            padding: '10px 20px',
-            borderRadius: '20px',
-            fontSize: '14px',
-            backdropFilter: 'blur(4px)',
-          }}>
-            💡 건물을 클릭하면 예약 페이지로 이동합니다
-          </div>
         </div>
-
       </div>
     </div>
   );

@@ -245,6 +245,25 @@
   font-weight: 700;
 }
 
+/* 깜빡임 애니메이션 (마감 시간 초과) */
+.slot-btn.flashing {
+  animation: flashRed 0.3s ease-in-out 3;
+  font-weight: 600;
+}
+
+@keyframes flashRed {
+  0%, 100% {
+    background: #e5e7eb;
+    color: #374151;
+    border-color: #d1d5db;
+  }
+  50% {
+    background: #fecaca;
+    color: #dc2626;
+    border-color: #f87171;
+  }
+}
+
 /* =========================================================
    Legend (신청가능/불가/선택)
 ========================================================= */

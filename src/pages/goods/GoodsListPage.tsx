@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoryRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/layout/Layout';
 import { GoodsList } from '../../components/goods/GoodsList';
 import { CategoryMenu } from '../../components/goods/CategoryMenu';
@@ -30,6 +30,10 @@ const MyListPage: React.FC = () => {
 
 // 라우터 컨텐츠
 const GoodsRoutes: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const showBackButton = location.pathname.includes('/detail');
+
   return (
     <Layout title="">
       <div className="goods-list-page" style={{
@@ -66,6 +70,31 @@ const GoodsRoutes: React.FC = () => {
             대여 전 주의사항을 반드시 확인해주세요.
           </div>
         </div>
+
+        {/* 뒤로가기 버튼 */}
+        {showBackButton && (
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              width: '100%',
+              padding: '12px',
+              marginBottom: '24px',
+              backgroundColor: '#f1f5f9',
+              color: '#475569',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '15px',
+              fontWeight: '600',
+              transition: 'background-color 0.2s',
+              textAlign: 'center',
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+          >
+            ← 목록으로 돌아가기
+          </button>
+        )}
 
         {/* 라우터 기반 콘텐츠 - 하단만 변경됨 */}
         <Routes>
