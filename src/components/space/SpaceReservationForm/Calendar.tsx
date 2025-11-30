@@ -65,7 +65,14 @@ export const Calendar: React.FC<CalendarProps> = ({ value, minDate, maxDate, onC
   const isDateAvailable = (day: number): boolean => {
     const dateStr = formatDate(currentMonth.year, currentMonth.month, day);
     // minDate와 maxDate 범위 내인지 확인
-    return dateStr >= normalizedMinDate && (!normalizedMaxDate || dateStr <= normalizedMaxDate);
+    const inRange = dateStr >= normalizedMinDate && (!normalizedMaxDate || dateStr <= normalizedMaxDate);
+    
+    // 일요일(0)은 선택 불가
+    const date = new Date(currentMonth.year, currentMonth.month, day);
+    const dayOfWeek = date.getDay(); // 0 = 일요일, 6 = 토요일
+    const isSunday = dayOfWeek === 0;
+    
+    return inRange && !isSunday;
   };
 
   // 날짜가 선택된 날짜인지 확인

@@ -6,6 +6,12 @@ export default defineConfig({
   manifest: {
     permissions: ['declarativeNetRequest'],
     host_permissions: ['*://hansung.ac.kr/*'],
+    web_accessible_resources: [
+      {
+        resources: ['injected/*.js'],
+        matches: ['*://hansung.ac.kr/*'],
+      },
+    ],
   },
   dev: {
     browser: 'chrome',
