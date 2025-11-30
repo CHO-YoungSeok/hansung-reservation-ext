@@ -5,12 +5,29 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
     permissions: ['declarativeNetRequest'],
-    host_permissions: ['*://hansung.ac.kr/*'],
+    host_permissions: ['*://hansung.ac.kr/*', '*://www.hansung.ac.kr/*'],
+    content_scripts: [
+      {
+        matches: ['https://hansung.ac.kr/cncschool/7309/subview.do*'],
+        js: ['entrypoints/goods.content.ts'],
+      },
+      {
+        matches: ['https://www.hansung.ac.kr/hansung/10561/subview.do*'],
+        js: ['entrypoints/custom_reservation_page.content.ts'],
+      },
+      {
+        matches: [
+          'https://www.hansung.ac.kr/hansung/index.do*',
+          'https://www.hansung.ac.kr/sites/hansung/index.do*'
+        ],
+        js: ['entrypoints/home.content.ts'],
+      },
+    ],
   },
   dev: {
     browser: 'chrome',
   },
   webExt: {
-    startUrls: ['file:///Users/0stone_1004/work-space/hansung-reservation-ext/.output/chrome-mv3-dev/newtab.html'],
+    startUrls: ['https://www.hansung.ac.kr/sites/hansung/index.do'],
   },
 });
