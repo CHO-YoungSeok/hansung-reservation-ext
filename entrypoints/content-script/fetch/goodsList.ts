@@ -152,6 +152,24 @@ const parseGoodsFromHTML = (html: string): GoodsData[] => {
             // 기본적으로 모든 기자재는 예약 가능으로 설정
             const status: 'available' | 'reserved' | 'unavailable' = 'available';
 
+            // 링크(<a> 태그) 찾기 및 파라미터 추출
+            const linkElement = imageCell.querySelector('a') || modelCell.querySelector('a');
+            let lendGroupSeq: string | undefined = undefined;
+            let lendMhrmlSeq: string | undefined = undefined;
+
+            if (linkElement) {
+              const href = linkElement.getAttribute('href');
+              if (href) {
+                try {
+                  const url = new URL(href, window.location.origin);
+                  lendGroupSeq = url.searchParams.get('lendGroupSeq') ?? undefined;
+                  lendMhrmlSeq = url.searchParams.get('lendMhrmlSeq') ?? undefined;
+                } catch (e) {
+                  console.error('URL 파싱 오류:', e);
+                }
+              }
+            }
+            
             goods.push({
               id: `goods-${cardIndex}`,
               name: displayName, // "기자재명 : 모델명" 형식
@@ -161,6 +179,8 @@ const parseGoodsFromHTML = (html: string): GoodsData[] => {
               description,
               specs,
               warnings,
+              lendGroupSeq,
+              lendMhrmlSeq,
             });
 
             console.log(`  ✓ 카드 ${cardIndex}: ${displayName} (${count}, ${location})`);

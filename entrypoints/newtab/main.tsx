@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import React from 'react';
 import './style.css';
 
 interface QuickLink {
@@ -7,6 +6,11 @@ interface QuickLink {
   url: string;
   icon: string;
   category: string;
+}
+
+interface UserData {
+  isLoggedIn: boolean;
+  userName: string;
 }
 
 const quickLinks: QuickLink[] = [
@@ -19,17 +23,15 @@ const quickLinks: QuickLink[] = [
   { name: '학사일정', url: 'https://www.hansung.ac.kr/hansung/1640/subview.do', icon: '📅', category: '정보' },
 ];
 
-function NewTab() {
+const NewTab: React.FC<{ userData: UserData }> = ({ userData }) => {
 
   return (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
       background: '#f0f2f5', // Lighter background
-      overflowY: 'auto', // Enable scrolling for content
       alignItems: 'center', // Center content horizontally
-      padding: '20px',
+      padding: '0 20px 20px 20px', // Removed top padding, kept others
     }}>
       {/* Header section */}
       <div style={{
@@ -45,13 +47,13 @@ function NewTab() {
         justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/icon/48.png" alt="logo" style={{ width: '32px', height: '32px', marginRight: '10px' }} />
+          <img src={browser.runtime.getURL('/icon/48.png')} alt="logo" style={{ width: '32px', height: '32px', marginRight: '10px' }} />
           <div>
             <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>한성대학교 예약 시스템</div>
             <div style={{ fontSize: '13px', color: '#777' }}>Hansung University Reservation</div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           {/* Notification icon */}
           <div style={{ position: 'relative', cursor: 'pointer' }}>
             <span style={{ fontSize: '24px', color: '#667eea' }}>🔔</span>
@@ -59,8 +61,10 @@ function NewTab() {
           </div>
           {/* My Page icon */}
           <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-            <span style={{ fontSize: '24px', color: '#667eea', marginRight: '5px' }}>👤</span>
-            <span style={{ fontSize: '15px', color: '#333', fontWeight: '500' }}>마이페이지</span>
+            <span style={{ fontSize: '24px', color: '#667eea', marginRight: '8px' }}>👤</span>
+            <span style={{ fontSize: '15px', color: '#333', fontWeight: 'bold' }}>
+              {userData.isLoggedIn ? `${userData.userName}님` : '로그인'}
+            </span>
           </div>
         </div>
       </div>
@@ -289,8 +293,4 @@ function NewTab() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <NewTab />
-  </React.StrictMode>,
-);
+export default NewTab;
