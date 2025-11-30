@@ -5,6 +5,7 @@ import { GoodsList } from '../../components/goods/GoodsList';
 import { CategoryMenu } from '../../components/goods/CategoryMenu';
 import { CategoryGoodsList } from '../../components/goods/CategoryGoodsList';
 import { GoodsDetailPage } from './GoodsDetailPage';
+import { MyReservationsPage } from "./MyReservation";
 
 // 카테고리별 기자재 목록 페이지
 const CategoryPage: React.FC = () => {
@@ -13,7 +14,7 @@ const CategoryPage: React.FC = () => {
 };
 
 // 나의 신청내역 페이지 (임시)
-const MyListPage: React.FC = () => {
+/*const MyListPage: React.FC = () => {
   return (
     <div style={{
       display: 'flex',
@@ -26,7 +27,7 @@ const MyListPage: React.FC = () => {
       나의 신청내역 페이지입니다.
     </div>
   );
-};
+};*/
 
 // 라우터 컨텐츠
 const GoodsRoutes: React.FC = () => {
@@ -101,7 +102,7 @@ const GoodsRoutes: React.FC = () => {
           <Route path="/" element={<GoodsList />} />
           <Route path="/category/:lendGroupSeq" element={<CategoryPage />} />
           <Route path="/detail/:lendGroupSeq/:lendMhrmlSeq" element={<GoodsDetailPage />} />
-          <Route path="/my-list" element={<MyListPage />} />
+          <Route path="/my-list" element={<MyReservationsPage />} />
         </Routes>
       </div>
     </Layout>
