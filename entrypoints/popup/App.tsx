@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import wxtLogo from '/wxt.svg';
+// import wxtLogo from '/wxt.svg';
 import './App.css';
 import LinkArea from "./LinkArea.jsx";
 
@@ -9,9 +9,9 @@ function App() {
   return (
     <>
       <div>
-          <a href="https://wxt.dev" target="_blank">
+          {/* <a href="https://wxt.dev" target="_blank">
               <img src={wxtLogo} className="logo" alt="WXT logo" />
-          </a>
+          </a> */}
       </div>
         <h2>한성대HSU 예약 시스템</h2>
         <div>

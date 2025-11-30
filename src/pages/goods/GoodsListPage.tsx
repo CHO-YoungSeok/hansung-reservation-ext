@@ -5,7 +5,6 @@ import { GoodsList } from '../../components/goods/GoodsList';
 import { CategoryMenu } from '../../components/goods/CategoryMenu';
 import { CategoryGoodsList } from '../../components/goods/CategoryGoodsList';
 import { GoodsDetailPage } from './GoodsDetailPage';
-import { MyReservationsPage } from "./MyReservation";
 
 // 카테고리별 기자재 목록 페이지
 const CategoryPage: React.FC = () => {
@@ -14,7 +13,7 @@ const CategoryPage: React.FC = () => {
 };
 
 // 나의 신청내역 페이지 (임시)
-/*const MyListPage: React.FC = () => {
+const MyListPage: React.FC = () => {
   return (
     <div style={{
       display: 'flex',
@@ -27,10 +26,14 @@ const CategoryPage: React.FC = () => {
       나의 신청내역 페이지입니다.
     </div>
   );
-};*/
+};
 
 // 라우터 컨텐츠
-const GoodsRoutes: React.FC = () => {
+interface GoodsRoutesProps {
+  isOverview: boolean; // Add prop
+}
+
+const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview }) => { // Accept prop
   const location = useLocation();
   const navigate = useNavigate();
   const showBackButton = location.pathname.includes('/detail');
@@ -72,6 +75,17 @@ const GoodsRoutes: React.FC = () => {
           </div>
         </div>
 
+        {/* 기자재 목록 표 (conditionally rendered) */}
+        {isOverview && (
+          <h2 style={{
+            fontWeight: 'bold',
+            fontSize: '18px', // Added font size for better visibility
+            margin: '20px 0 10px 0', // Added margin
+          }}>
+            기자재 목록 표
+          </h2>
+        )}
+
         {/* 뒤로가기 버튼 */}
         {showBackButton && (
           <button
@@ -99,7 +113,7 @@ const GoodsRoutes: React.FC = () => {
 
         {/* 라우터 기반 콘텐츠 - 하단만 변경됨 */}
         <Routes>
-          <Route path="/" element={<GoodsList />} />
+          <Route path="/" element={<GoodsList isOverview={isOverview} />} /> {/* Pass isOverview */}
           <Route path="/category/:lendGroupSeq" element={<CategoryPage />} />
           <Route path="/detail/:lendGroupSeq/:lendMhrmlSeq" element={<GoodsDetailPage />} />
           <Route path="/my-list" element={<MyReservationsPage />} />
@@ -127,9 +141,12 @@ export const GoodsListPage: React.FC = () => {
     return '/';
   };
 
+  const initialRoute = getInitialRoute();
+  const isOverviewPage = initialRoute === '/'; // Determine if it's the overview page
+
   return (
-    <Router initialEntries={[getInitialRoute()]} initialIndex={0}>
-      <GoodsRoutes />
+    <Router initialEntries={[initialRoute]} initialIndex={0}>
+      <GoodsRoutes isOverview={isOverviewPage} /> {/* Pass the prop */}
     </Router>
   );
 };

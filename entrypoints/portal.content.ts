@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import NewTab from './newtab/main'; // Assuming main.tsx exports NewTab as default
+import NewTab from './hansungHomePage/main';
 
 export default defineContentScript({
   matches: ['*://www.hansung.ac.kr/hansung/10561/subview.do*'],

@@ -6,7 +6,7 @@ import type { GoodsData } from '../../services/goodsApi';
 import { getDefaultGoods } from '../../services/goodsApi';
 import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
 
-export const GoodsList: React.FC = () => {
+export const GoodsList: React.FC<{ isOverview?: boolean }> = ({ isOverview = false }) => {
   const navigate = useNavigate();
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -104,17 +104,18 @@ export const GoodsList: React.FC = () => {
           {error}
         </div>
       )}
-      <div className="goods-list" style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(700px, 1fr))',
-        gap: '20px',
-      }}>
-        {goods.map(item => (
-          <GoodsItem
-            key={item.id}
-            {...item}
-            onSelect={handleSelectGoods}
-          />
+
+      {/* 기자재 리스트 */}
+      <div
+        className="goods-list"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(700px, 1fr))",
+          gap: "20px",
+        }}
+      >
+        {goods.map((g) => (
+          <GoodsItem key={g.id} {...g} onSelect={handleSelectGoods} />
         ))}
       </div>
 
