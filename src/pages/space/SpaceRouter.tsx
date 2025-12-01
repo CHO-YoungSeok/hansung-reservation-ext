@@ -1,18 +1,18 @@
 import React from 'react';
 import { SpaceListPage } from './SpaceListPage';
-import { SpaceDetailPage } from './SpaceDetailPage';
+import { SpaceReservationPage } from './SpaceReservationPage';
 
 export const SpaceRouter: React.FC = () => {
   // URL 파라미터 확인
   const urlParams = new URLSearchParams(window.location.search);
-  const encParam = urlParams.get('enc');
+  const spaceId = urlParams.get('spaceId');
 
-  if (encParam) {
-    // enc 파라미터가 있으면 SpaceDetailPage 표시
-    return <SpaceDetailPage />;
+  if (spaceId) {
+    // spaceId 파라미터가 있으면 예약 상세 페이지 표시
+    return <SpaceReservationPage />;
   }
 
-  // enc 파라미터가 없으면 SpaceListPage 표시
+  // spaceId 파라미터가 없으면 예약 리스트 페이지 표시
   return <SpaceListPage />;
 };
 

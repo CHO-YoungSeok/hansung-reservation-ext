@@ -2,13 +2,13 @@
   {
     "id": "64",
     "name": "세미나실(IB111)",
-    "capacity": 4,
+    "capacity": 8,
     "facilities": ["화이트보드"],
     "status": "available",
     "location": "상상관 지하 2층",
     "description": "그룹 세미나 및 소규모 강연이 가능한 세미나실",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -20,7 +20,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -28,11 +28,11 @@
     "name": "IB102",
     "capacity": 4,
     "facilities": ["화이트보드"],
-    "status": "reserved",
+    "status": "available",
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -44,7 +44,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -56,7 +56,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -68,7 +68,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -80,7 +80,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -92,7 +92,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   },
   {
@@ -104,7 +104,7 @@
     "location": "상상관 지하 2층",
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
-    "operatingHours": "09:00 - 18:00",
+    "operatingHours": "09:00 - 21:00",
     "roomGroup": "상상베이스"
   }
 ]

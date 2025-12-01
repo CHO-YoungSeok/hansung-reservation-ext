@@ -14,15 +14,55 @@ interface SpaceData {
 const SPACE_GROUP_ID = '37'; // "상상베이스"의 group ID
 
 /**
+ * DOM에서 요소를 찾을 때까지 대기하는 헬퍼 함수
+ */
+function waitForElement(selector: string, timeout: number = 5000): Promise<HTMLElement> {
+  return new Promise((resolve, reject) => {
+    // 먼저 즉시 확인
+    const element = document.querySelector(selector) as HTMLElement;
+    if (element) {
+      resolve(element);
+      return;
+    }
+
+    // 없으면 MutationObserver로 감시
+    const observer = new MutationObserver(() => {
+      const element = document.querySelector(selector) as HTMLElement;
+      if (element) {
+        observer.disconnect();
+        resolve(element);
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    // 타임아웃 설정
+    setTimeout(() => {
+      observer.disconnect();
+      const element = document.querySelector(selector) as HTMLElement;
+      if (element) {
+        resolve(element);
+      } else {
+        reject(new Error(`요소를 찾을 수 없습니다: ${selector}`));
+      }
+    }, timeout);
+  });
+}
+
+/**
  * group select를 먼저 선택하여 resveSpceSeq 옵션을 로드합니다.
  */
 function selectGroup(groupId: string = SPACE_GROUP_ID): Promise<void> {
-  return new Promise((resolve) => {
-    const groupSelect = document.querySelector('#group') as HTMLSelectElement;
-    
-    if (!groupSelect) {
-      console.warn('[자동 채우기] #group select를 찾을 수 없습니다.');
-      resolve();
+  return new Promise(async (resolve) => {
+    // group select를 찾을 때까지 대기
+    let groupSelect: HTMLSelectElement;
+    try {
+      groupSelect = await waitForElement('#group', 5000) as HTMLSelectElement;
+    } catch (error) {
+      resolve(); // 찾지 못해도 에러 없이 진행
       return;
     }
 
@@ -30,7 +70,6 @@ function selectGroup(groupId: string = SPACE_GROUP_ID): Promise<void> {
     if (groupSelect.value === groupId) {
       const resveSpceSeqSelect = document.querySelector('#resveSpceSeq') as HTMLSelectElement;
       if (resveSpceSeqSelect && resveSpceSeqSelect.options.length > 1) {
-        console.log(`[자동 채우기] group이 이미 선택되어 있고 옵션도 로드됨: ${groupId}`);
         resolve();
         return;
       }
@@ -42,8 +81,6 @@ function selectGroup(groupId: string = SPACE_GROUP_ID): Promise<void> {
     // change 이벤트 발생시켜서 jf_selectGroup이 실행되도록
     const changeEvent = new Event('change', { bubbles: true });
     groupSelect.dispatchEvent(changeEvent);
-    
-    console.log(`[자동 채우기] group 선택됨: ${groupId}`);
     
     let timeoutId: number | undefined;
     let checkIntervalId: number | undefined;
@@ -60,7 +97,6 @@ function selectGroup(groupId: string = SPACE_GROUP_ID): Promise<void> {
       
       const resveSpceSeqSelect = document.querySelector('#resveSpceSeq') as HTMLSelectElement;
       if (resveSpceSeqSelect && resveSpceSeqSelect.options.length > 1) {
-        console.log('[자동 채우기] resveSpceSeq 옵션 로드 완료');
         isResolved = true;
         cleanup();
         resolve();
@@ -73,7 +109,6 @@ function selectGroup(groupId: string = SPACE_GROUP_ID): Promise<void> {
     // 최대 3초 대기
     timeoutId = window.setTimeout(() => {
       if (!isResolved) {
-        console.warn('[자동 채우기] resveSpceSeq 옵션 로드 시간 초과');
         isResolved = true;
         cleanup();
         resolve();
@@ -87,12 +122,13 @@ function selectGroup(groupId: string = SPACE_GROUP_ID): Promise<void> {
  * 기존 JavaScript가 자동으로 정보를 채우도록 합니다.
  * @param spaceId 공간 ID (resveSpceSeq 값)
  */
-export function setSpaceSelection(spaceId: string): void {
-  const resveSpceSeqSelect = document.querySelector('#resveSpceSeq') as HTMLSelectElement;
-  
-  if (!resveSpceSeqSelect) {
-    console.warn('[자동 채우기] #resveSpceSeq select를 찾을 수 없습니다.');
-    return;
+export async function setSpaceSelection(spaceId: string): Promise<void> {
+  // resveSpceSeq select를 찾을 때까지 대기
+  let resveSpceSeqSelect: HTMLSelectElement;
+  try {
+    resveSpceSeqSelect = await waitForElement('#resveSpceSeq', 5000) as HTMLSelectElement;
+  } catch (error) {
+    return; // 찾지 못하면 종료
   }
 
   // select에 value 설정
@@ -101,8 +137,6 @@ export function setSpaceSelection(spaceId: string): void {
   // change 이벤트 발생시켜서 기존 JavaScript가 실행되도록
   const changeEvent = new Event('change', { bubbles: true });
   resveSpceSeqSelect.dispatchEvent(changeEvent);
-  
-  console.log(`[자동 채우기] 공간 선택됨: ${spaceId}`);
 }
 
 /**
@@ -140,7 +174,6 @@ export function autoSelectSpaceFromUrl(): Promise<void> {
               
               // 이미 정보가 채워져 있으면 바로 완료
               if (mngrInput?.value || mngrTelnoInput?.value || identityCodeInput?.value) {
-                console.log('[자동 채우기] 공간이 이미 선택되어 있고 정보도 채워짐');
                 resolve();
                 return;
               }
@@ -167,7 +200,6 @@ export function autoSelectSpaceFromUrl(): Promise<void> {
               
               // 하나라도 값이 있으면 정보가 채워진 것으로 간주
               if (mngrInput?.value || mngrTelnoInput?.value || identityCodeInput?.value) {
-                console.log('[자동 채우기] 공간 정보 채우기 완료');
                 isResolved = true;
                 cleanup();
                 resolve();
@@ -180,14 +212,12 @@ export function autoSelectSpaceFromUrl(): Promise<void> {
             // 최대 3초 대기
             timeoutId = window.setTimeout(() => {
               if (!isResolved) {
-                console.warn('[자동 채우기] 공간 정보 채우기 시간 초과');
                 isResolved = true;
                 cleanup();
                 resolve();
               }
             }, 3000);
           } else {
-            console.warn(`[자동 채우기] spaceId "${spaceId}"가 옵션에 없습니다.`);
             resolve();
           }
         } else {
@@ -208,8 +238,6 @@ let autoFillObserver: MutationObserver | null = null; // Observer 참조 저장
  * 기존 페이지의 원래 폼에서 공간 선택 자동 채우기를 설정합니다.
  */
 export function setupSpaceAutoFill(): void {
-  console.log('[자동 채우기] 공간 선택 자동 채우기 설정 시작');
-  
   // 기존 observer가 있으면 제거
   if (autoFillObserver) {
     autoFillObserver.disconnect();
@@ -248,8 +276,9 @@ export function setupSpaceAutoFill(): void {
         
         if (optionExists && resveSpceSeqSelect.value !== spaceId) {
           isAutoFilling = true;
-          setSpaceSelection(spaceId);
-          setTimeout(() => { isAutoFilling = false; }, 1000);
+          setSpaceSelection(spaceId).then(() => {
+            setTimeout(() => { isAutoFilling = false; }, 1000);
+          });
         }
       }
     });
@@ -259,7 +288,5 @@ export function setupSpaceAutoFill(): void {
       subtree: true,
     });
   }
-  
-  console.log('[자동 채우기] 공간 선택 자동 채우기 설정 완료');
 }
 

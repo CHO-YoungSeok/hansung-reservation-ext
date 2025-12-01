@@ -3,10 +3,21 @@
  * 환경 변수에서 URL을 가져옵니다.
  */
 
-export const SPACE_CONFIG = {
-  reservationBaseUrl: ((import.meta.env as any).VITE_RESERVATION_BASE_URL as string) || 'https://www.hansung.ac.kr/onestop/8952/subview.do',
-  reservationEncParam: ((import.meta.env as any).VITE_RESERVATION_ENC_PARAM as string) || 'enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFJlZ2lzdFZpZXcuZG8lM0Y%3D',
-} as const;
+const BASE_8952 = 'https://www.hansung.ac.kr/onestop/8952/subview.do';
+const ENC_8952  = 'enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFJlZ2lzdFZpZXcuZG8lM0Y%3D';
+
+const BASE_9611 = 'https://www.hansung.ac.kr/hsel/9611/subview.do';
+const ENC_9611  = 'enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZoc2VsJTJGMjQlMkZhcnRjbFJlZ2lzdFZpZXcuZG8lM0Y%3D';
+
+function getCurrentConfig() {
+  const href = window.location.href;
+
+  if (href.includes('/hsel/9611/')) {
+    return { baseUrl: BASE_9611, encParam: ENC_9611 };
+  }
+  // 기본은 상상베이스(8952)
+  return { baseUrl: BASE_8952, encParam: ENC_8952 };
+}
 
 /**
  * 예약 페이지 URL 생성
@@ -14,13 +25,11 @@ export const SPACE_CONFIG = {
  * @returns 예약 페이지 URL
  */
 export const getReservationUrl = (spaceId: string): string => {
-  return `${SPACE_CONFIG.reservationBaseUrl}?${SPACE_CONFIG.reservationEncParam}&spaceId=${spaceId}`;
+  const { baseUrl, encParam } = getCurrentConfig();
+  return `${baseUrl}?${encParam}&spaceId=${spaceId}`;
 };
 
-/**
- * 목록 페이지 URL
- */
 export const getListUrl = (): string => {
-  return SPACE_CONFIG.reservationBaseUrl;
+  const { baseUrl } = getCurrentConfig();
+  return baseUrl;
 };
-
