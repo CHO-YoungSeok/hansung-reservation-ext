@@ -62,6 +62,7 @@ export const SpaceList: React.FC<SpaceListProps> = ({ onSelectSpace }) => {
 
   return (
   <div className="space-list">
+    <a href="https://www.hansung.ac.kr/onestop/8952/subview.do?enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFZpZXcuZG8lM0Y%3D" title="나의 신청내역">나의 신청내역</a>
     {spaces.map((item) => (
       <SpaceItem
         key={item.id}
