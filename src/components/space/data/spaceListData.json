@@ -9,7 +9,8 @@
     "description": "그룹 세미나 및 소규모 강연이 가능한 세미나실",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB111.jpg"
   },
   {
     "id": "63",
@@ -21,7 +22,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "62",
@@ -33,7 +35,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "61",
@@ -45,7 +48,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "60",
@@ -57,7 +61,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "59",
@@ -69,7 +74,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "58",
@@ -81,7 +87,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "57",
@@ -93,7 +100,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   },
   {
     "id": "52",
@@ -105,7 +113,8 @@
     "description": "자유로운 이야기 및 토론이 가능한 소그룹 학습 활동 공간",
     "managerContact": "02-760-8000",
     "operatingHours": "09:00 - 21:00",
-    "roomGroup": "상상베이스"
+    "roomGroup": "상상베이스",
+    "coverImageUrl": "/Images/IB10.jpg"
   }
 ]
 

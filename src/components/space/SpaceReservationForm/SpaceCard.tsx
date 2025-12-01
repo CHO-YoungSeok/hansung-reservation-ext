@@ -48,6 +48,25 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
 
   const hasTimeSlots = Array.isArray(timeSlots) && timeSlots.length > 0;
 
+  // coverImageUrl이 "/Images/..." 형태면 확장 리소스 URL로 변환
+  const imageSrc = useMemo(() => {
+    const raw = space.coverImageUrl;
+    if (!raw) return undefined;
+
+    // 크롬 확장 내부 리소스 사용
+    if (raw.startsWith('/')) {
+      const runtime = (globalThis as any).chrome?.runtime;
+      if (runtime?.getURL) {
+        // "/Images/IB10.jpg" -> "Images/IB10.jpg"
+        const path = raw.replace(/^\//, '');
+        return runtime.getURL(path);
+      }
+    }
+
+    // 그 외에는 그대로 사용
+    return raw;
+  }, [space.coverImageUrl]);
+
   const cardClassName =
     variant === 'list'
       ? 'space-card space-card--list'
@@ -75,12 +94,8 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
       <div className="space-card__container">
         {/* 왼쪽: 사진 */}
         <div className="space-card__image-container">
-          {space.coverImageUrl ? (
-            <img
-              src={space.coverImageUrl}
-              alt={space.name}
-              className="space-card__image"
-            />
+          {imageSrc ? (
+            <img src={imageSrc} alt={space.name} className="space-card__image" />
           ) : (
             <div className="space-card__placeholder">사진 등록 예정</div>
           )}

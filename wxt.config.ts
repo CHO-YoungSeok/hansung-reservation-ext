@@ -6,6 +6,12 @@ export default defineConfig({
   manifest: {
     permissions: ['declarativeNetRequest'],
     host_permissions: ['*://hansung.ac.kr/*', '*://www.hansung.ac.kr/*'],
+    web_accessible_resources: [
+      {
+        resources: ['injected/*.js', 'Images/*'],
+        matches: ['*://hansung.ac.kr/*', '*://www.hansung.ac.kr/*'],
+      },
+    ],
     content_scripts: [
       {
         matches: ['https://hansung.ac.kr/cncschool/7309/subview.do*'],
@@ -35,9 +41,6 @@ export default defineConfig({
         js: ['entrypoints/loginPage.content.ts'],
       },
     ],
-  },
-  dev: {
-    browser: 'chrome',
   },
   webExt: {
     startUrls: ['https://www.hansung.ac.kr/sites/hansung/index.do'],
