@@ -12,7 +12,8 @@ import { extractEventsFromDom } from '~/src/utils/calendarEvents';
 export default defineContentScript({
   matches: [
     'https://www.hansung.ac.kr/onestop/8952/subview.do*',
-    'https://www.hansung.ac.kr/onestop/8952/*',
+    'resve/onestop/21/artclRegistView.do?layout=unknown',
+    
   ],
   main() {
     const CALENDAR_EVENTS_KEY = 'SPACE_CALENDAR_EVENTS_V1';
