@@ -27,9 +27,15 @@ export default defineContentScript({
       const panelContent = sidePanel.querySelector('#panel-content');
       if (panelContent) {
         const reactRoot = ReactDOM.createRoot(panelContent);
-        const userData = getUserInfo();
-        console.log('사용자 정보:', userData);
-        reactRoot.render(React.createElement(NewTabPage, { userData }));
+
+        // IMPORTANT: Wait for DOM to be fully loaded before getting user info
+        // The homepage may load login-related elements (logout link, user info) asynchronously
+        // We need to wait a bit to ensure these elements are rendered
+        setTimeout(() => {
+          const userData = getUserInfo();
+          console.log('[Home Content] 사용자 정보 (지연 후):', userData);
+          reactRoot.render(React.createElement(NewTabPage, { userData }));
+        }, 500); // 500ms delay to allow DOM elements to render
       }
 
       // Set up toggle functionality

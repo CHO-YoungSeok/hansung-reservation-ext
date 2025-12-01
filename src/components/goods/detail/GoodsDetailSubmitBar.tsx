@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Navigate } from "react-router-dom";
 
 interface Props {
   form: HTMLFormElement | null;
+  navigate: (path: string) => void;
 }
 
-export const GoodsDetailSubmitBar: React.FC<Props> = ({ form }) => {
+export const GoodsDetailSubmitBar: React.FC<Props> = ({ form, navigate }) => {
   React.useEffect(() => {
     console.log("[SubmitBar-MOUNT] 컴포넌트 마운트됨. Form:", form);
     console.log("[SubmitBar-MOUNT] Document.body:", document.body);
@@ -22,7 +24,7 @@ export const GoodsDetailSubmitBar: React.FC<Props> = ({ form }) => {
 
     const action = form.getAttribute("action");
     console.log("[SubmitBar-FORM] action:", action);
-    
+
     if (!action) {
       console.error("[SubmitBar-ERROR] action이 없습니다");
       alert("예약 요청 URL을 찾을 수 없습니다.");
@@ -48,6 +50,7 @@ export const GoodsDetailSubmitBar: React.FC<Props> = ({ form }) => {
 
       if (text.includes("성공") || text.includes("완료")) {
         alert("예약이 완료되었습니다.");
+        navigate("/my-list")
       } else {
         alert("예약에 실패했습니다.");
       }

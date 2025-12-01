@@ -1,28 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./GoodsDetail.css";
-import { UserInfo } from "../../utils/authUtils";
 
 interface Props {
   html: string;
   onUseHoursChange?: (hours: number) => void;   // 🔥 추가 (부모에게 전달)
-  userInfo: UserInfo;
 }
 
-export const GoodsDetailDefaultForm: React.FC<Props> = ({ html, onUseHoursChange, userInfo }) => {
-  const [userName, setUserName] = useState(userInfo.userName || "");
-  const [studentId, setStudentId] = useState(userInfo.studentId || "");
+export const GoodsDetailDefaultForm: React.FC<Props> = ({ html, onUseHoursChange }) => {
+  const [userName, setUserName] = useState("");
+  const [studentId, setStudentId] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [useHours, setUseHours] = useState<number>(1);   // 🔥 추가
 
   useEffect(() => {
-    if (userInfo.userName) {
-      setUserName(userInfo.userName);
-    }
-    if (userInfo.studentId) {
-      setStudentId(userInfo.studentId);
-    }
-
     if (!html) return;
 
     const doc = new DOMParser().parseFromString(html, "text/html");
@@ -35,9 +26,8 @@ export const GoodsDetailDefaultForm: React.FC<Props> = ({ html, onUseHoursChange
 
       if (!label || !value) return;
 
-      // Only parse from HTML if userInfo didn't provide it
-      if (!userInfo.userName && (label.includes("예약자명") || label.includes("신청자"))) setUserName(value);
-      if (!userInfo.studentId && (label.includes("사번") || label.includes("학번"))) setStudentId(value);
+      if (label.includes("예약자명")) setUserName(value);
+      if (label.includes("사번") || label.includes("학번")) setStudentId(value);
     });
 
     // input 값 읽기
@@ -55,7 +45,7 @@ export const GoodsDetailDefaultForm: React.FC<Props> = ({ html, onUseHoursChange
         setUseHours(parseInt(value) || 1);
       }
     });
-  }, [html, userInfo]);
+  }, [html]);
 
   // 🔥 예상시간 바뀌면 부모에게 전달
   useEffect(() => {

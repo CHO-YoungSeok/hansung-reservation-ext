@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
 import { LoginPromptModal } from '../../src/components/common/LoginPromptModal';
-import { redirectToLogin, redirectToLogout } from '../../src/utils/authUtils';
+import { redirectToLogin, redirectToLogout, getUserInfo } from '../../src/utils/authUtils';
 import { CompactRecentReservations } from '../../src/components/reservation/CompactRecentReservations';
 
 interface QuickLink {
@@ -29,7 +29,7 @@ const defaultQuickLinks: QuickLink[] = [
   { id: crypto.randomUUID(), name: '학사일정', url: 'https://www.hansung.ac.kr/eduinfo/3808/subview.do', icon: '📅', category: '정보', isDefault: true },
 ];
 
-const NewTab: React.FC<{ userData: UserData }> = ({ userData }) => {
+const NewTab: React.FC<{ userData: UserData }> = ({ userData: initialUserData }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [editingLink, setEditingLink] = useState<QuickLink | null>(null);
@@ -37,9 +37,37 @@ const NewTab: React.FC<{ userData: UserData }> = ({ userData }) => {
     const saved = localStorage.getItem('hansungQuickLinks');
     return saved ? JSON.parse(saved) : defaultQuickLinks;
   });
+  // State to track current user data (may be updated after mount)
+  const [userData, setUserData] = useState<UserData>(initialUserData);
+
+  // Re-check login status after component mounts
+  // This handles cases where the DOM wasn't fully loaded when the content script first ran
+  useEffect(() => {
+    const recheckLoginStatus = () => {
+      const updatedUserData = getUserInfo();
+      console.log('[NewTab] 로그인 상태 재확인:', updatedUserData);
+
+      // Only update if the login status has changed
+      if (updatedUserData.isLoggedIn !== userData.isLoggedIn) {
+        console.log('[NewTab] 로그인 상태 변경 감지, UI 업데이트:', {
+          before: userData,
+          after: updatedUserData
+        });
+        setUserData(updatedUserData);
+      }
+    };
+
+    // Check immediately after mount
+    recheckLoginStatus();
+
+    // Also check after a short delay to catch any late-loading elements
+    const timeoutId = setTimeout(recheckLoginStatus, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, []); // Run only once after mount
 
   // Save to localStorage whenever links change
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem('hansungQuickLinks', JSON.stringify(quickLinks));
   }, [quickLinks]);
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   GoodsDetailLayout,
@@ -59,8 +60,11 @@ export const GoodsDetailPage: React.FC = () => {
   const [timeTableData, setTimeTableData] = useState<any>(null);
   const [useHours, setUseHours] = useState<number>(1); // 예상사용시간
 
+  const navigate = useNavigate()
+
   // Get user info
   const userInfo = getUserInfo();
+
 
   /*──────────────────────────────
     1) 초기 전체 HTML 로딩
@@ -76,7 +80,7 @@ export const GoodsDetailPage: React.FC = () => {
       const html = await response.text();
 
       const doc = new DOMParser().parseFromString(html, "text/html");
-      
+
 
 
       // 로그인 체크
@@ -170,9 +174,9 @@ export const GoodsDetailPage: React.FC = () => {
 
     load();
   }, [selectedDate]);
-    /*──────────────────────────────
-    4) 원본 form을 실제 DOM에 붙이기 (방법 A 핵심)
-  ──────────────────────────────*/
+  /*──────────────────────────────
+  4) 원본 form을 실제 DOM에 붙이기 (방법 A 핵심)
+──────────────────────────────*/
   useEffect(() => {
     if (!form) return;
 
@@ -226,7 +230,7 @@ export const GoodsDetailPage: React.FC = () => {
       />
 
       <GoodsDetailAgreement html={agreementHTML} />
-      <GoodsDetailSubmitBar form={form} />
+      <GoodsDetailSubmitBar form={form} navigate={navigate} />
     </GoodsDetailLayout>
   );
 };
@@ -246,7 +250,7 @@ function extractSection(root: HTMLElement, title: string) {
 }
 
 function extractDefaultFormOnly(root: HTMLElement) {
-  const headers = Array.from(root.querySelectorAll( "h2.objHeading_h2"));
+  const headers = Array.from(root.querySelectorAll("h2.objHeading_h2"));
   const target = headers.find((h2) => h2.textContent?.includes("기본신청서"));
   if (!target) return "";
   let html = "";
