@@ -6,22 +6,18 @@ export const SpaceListPage: React.FC = () => {
   return (
     <Layout title="상상베이스 세미나실 예약">
       <div className="space-list-page">
-        <div className="filter-section" style={{ marginBottom: '20px' }}>
-          {/* <input 
-            type="date" 
-            style={{ padding: '8px', marginRight: '10px' }}
-          />
-          <select style={{ padding: '8px', marginRight: '10px' }}>
-            <option value="">전체 시간</option>
-            <option value="morning">오전</option>
-            <option value="afternoon">오후</option>
-            <option value="evening">저녁</option>
-          </select>
-          <input 
-            type="number" 
-            placeholder="최소 인원" 
-            style={{ padding: '8px', width: '100px' }}
-          /> */}
+        <div className="space-list-page__filters">
+          {/* 나의 신청내역 버튼 */}
+          <button
+            type="button"
+            className="space-list-page__my-reservations-button"
+            onClick={() => {
+              window.location.href =
+                'https://www.hansung.ac.kr/onestop/8952/subview.do?enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFZpZXcuZG8lM0Y%3D';
+            }}
+          >
+            나의 신청내역
+          </button>
         </div>
         <SpaceList />
       </div>
