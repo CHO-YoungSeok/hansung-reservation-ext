@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This project is a Chrome/Edge extension designed to improve the user experience of Hansung University's reservation system for equipment and spaces. The extension is built with React, TypeScript, and the WXT framework for building browser extensions.
 
-The extension provides a new, interactive campus map on the new tab page, allowing users to quickly navigate to the reservation pages for different buildings. It also enhances the UI/UX of the equipment (goods) and space reservation pages by replacing the existing interface with a more modern and user-friendly one built with React.
+The extension enhances the UI/UX of the equipment (goods) and space reservation pages by replacing the existing interface with a more modern and user-friendly one built with React.
 
 ## WXT Framework
 
@@ -124,26 +124,29 @@ The project follows a structure that separates concerns into different directori
 The extension uses multiple content scripts that inject React applications into specific pages of the Hansung University website:
 
 1. **goods.content.ts** - Injects the equipment reservation UI into `https://hansung.ac.kr/cncschool/7309/subview.do*`
-   - Extracts data BEFORE clearing DOM to preserve scraped information
+   - **CRITICAL ORDER**: Extracts data BEFORE clearing DOM to preserve scraped information
+   - Uses `parseGoodsFromHTML()` from `entrypoints/content-script/fetch/goodsList.ts`
    - Passes `initialGoods` prop to `GoodsListPage` component
+   - Clears the DOM only AFTER data extraction is complete
 
 2. **space.content.ts** - Injects the space reservation UI into the space reservation pages
 
 3. **home.content.ts** - Injects a floating side panel on the Hansung homepage
    - Creates a floating toggle button (fixed position, right side)
    - Renders a slide-in side panel with reservation system shortcuts
-   - Uses `authUtils.ts` to check user login status via DOM inspection
+   - Uses `getUserInfo()` from `authUtils.ts` to extract user information from DOM
    - Panel can be toggled with button click or ESC key
+   - All styling is inline to avoid conflicts with host page CSS
 
 4. **custom_reservation_page.content.ts** - Custom reservation page modifications
 
 5. **portal.content.ts** - Portal page modifications
 
-Each content script follows the same pattern:
+Each content script follows the same critical pattern:
 1. Wait for the page to load (check `document.readyState`)
 2. Find the target container (usually `#contents` or `.contents`)
 3. **CRITICAL**: Extract data from DOM BEFORE clearing (for goods/space pages)
-4. Clear the existing content
+4. Clear the existing content AFTER extraction
 5. Create a React root and render the corresponding page component
 
 ### Data Extraction and Rendering Flow
@@ -174,9 +177,10 @@ The extension handles two different HTML structures from the Hansung website:
 
 1. **Table Structure** (`subview.do`, `lendSummary.do`):
    - Parses `<table>` elements with `data-namo-table-template` attribute
-   - Handles rowspan for equipment names
-   - Extracts: image, model name, count, location
+   - Handles rowspan for equipment names (equipment name can span multiple rows)
+   - Each row can contain multiple "sets" of 4 cells: image, model name, count, location
    - Function: `parseGoodsFromHTML()` in `entrypoints/content-script/fetch/goodsList.ts`
+   - Extracts: image URL, model name, count, location for each equipment
 
 2. **Card/List Structure** (`lendMhrmlList.do`):
    - Parses `.wrap-form.wrap_list` containers
@@ -191,7 +195,7 @@ The extension uses `react-router-dom` with `MemoryRouter` for client-side naviga
 - `/` - Main goods overview page (shows all equipment)
 - `/category/:lendGroupSeq` - Category-specific equipment list
 - `/detail/:lendGroupSeq/:lendMhrmlSeq` - Equipment detail page with reservation form
-- `/my-list` - User's reservation history (placeholder)
+- `/my-list` - User's reservation history
 
 The initial route is determined by parsing the current URL in `GoodsListPage.tsx:getInitialRoute()`.
 
@@ -208,11 +212,22 @@ These dictionaries are matched against the extracted equipment names/categories 
 
 1. **DOM Parsing Reliability**: The data extraction functions include extensive error handling and logging because the source HTML structure can vary. Always check console logs when debugging extraction issues.
 
-2. **URL Matching**: The extension detects which parsing function to use based on the URL pathname. When adding support for new pages, update the URL detection logic in `fetchGoodsFromCurrentPage()`.
+2. **URL Matching**: The extension detects which parsing function to use based on the URL pathname. When adding support for new pages, update the URL detection logic in the content script's `main()` function.
 
 3. **Image URL Handling**: Relative image URLs from the source pages are automatically converted to absolute URLs by prepending `https://hansung.ac.kr`.
 
-4. **Async vs Sync Extraction**: The codebase includes both async (`fetchGoodsFromCurrentPage()`) and sync (`fetchGoodsFromCurrentPageSync()`) versions of data extraction. The async version uses `fetch()` to retrieve clean HTML, while the sync version parses the already-modified DOM.
+4. **Data Extraction Timing**: Always extract data BEFORE clearing the DOM. The pattern is:
+   ```typescript
+   // STEP 1: Extract data BEFORE clearing DOM
+   const { parseGoodsFromHTML } = await import('~/entrypoints/content-script/fetch/goodsList');
+   const extractedGoods = parseGoodsFromHTML(document.documentElement.outerHTML);
+
+   // STEP 2: NOW clear DOM (safe - we have the data)
+   contentArea.innerHTML = '';
+
+   // STEP 3: Render React with extracted data as props
+   reactRoot.render(React.createElement(GoodsListPage, { initialGoods: extractedGoods }));
+   ```
 
 5. **Category Mapping**: The `lendGroupSeq` parameter maps to equipment categories:
    - '1' = VR/AR/기타
@@ -221,10 +236,11 @@ These dictionaries are matched against the extracted equipment names/categories 
    - '4' = 레이저 커팅기
 
 6. **Authentication Detection**: The extension uses DOM-based authentication checking:
-   - `authUtils.ts` provides `isUserLoggedIn()`, which inspects the DOM structure
-   - `checkLoginStatus()` in `authChecker.ts` performs the actual DOM inspection
+   - `authUtils.ts` provides `isUserLoggedIn()`, which calls `checkLoginStatus()` from `components/common/authChecker.ts`
    - Login/logout URLs and redirect functions are centralized in `authUtils.ts`
-   - User info is extracted from the page DOM structure via `getUserInfo()`
+   - User info is extracted from the page DOM structure via `getUserInfo()` in `authUtils.ts`
+
+7. **Inline Styling Philosophy**: All React components use inline styles to avoid CSS conflicts with the host page. This is especially important in content scripts where the host page's CSS could interfere with the extension's UI.
 
 ## Testing the Extension
 
@@ -243,3 +259,4 @@ These dictionaries are matched against the extracted equipment names/categories 
 - The data extraction functions include extensive `console.log` statements for debugging
 - Check the "Errors" tab in `chrome://extensions/` for content script errors
 - Use `console.log` statements liberally in the data extraction functions to trace parsing issues
+- Look for messages like `[Goods Content] Extracted X items` to verify data extraction succeeded

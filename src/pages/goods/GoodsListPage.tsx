@@ -36,9 +36,12 @@ interface GoodsRoutesProps {
   initialGoods?: GoodsData[]; // Add initialGoods prop
 }
 
-const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview, initialGoods }) => { // Accept props
+const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview: initialIsOverview, initialGoods }) => { // Accept props
   const location = useLocation();
   const navigate = useNavigate();
+
+  // 현재 location을 기반으로 동적으로 isOverview 계산
+  const isOverview = location.pathname === '/';
   const showBackButton = location.pathname.includes('/detail');
 
   return (
@@ -51,32 +54,34 @@ const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview, initialGoods }) =
         {/* 카테고리 메뉴 - 모든 페이지에서 공통으로 표시 */}
         <CategoryMenu />
 
-        {/* 안내 정보 */}
-        <div style={{
-          background: 'linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%)',
-          border: '1px solid #bfdbfe',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          marginBottom: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-        }}>
+        {/* 안내 정보 - 개요 페이지가 아닐 때만 표시 */}
+        {!isOverview && (
           <div style={{
-            fontSize: '24px',
+            background: 'linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%)',
+            border: '1px solid #bfdbfe',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
           }}>
-            💡
+            <div style={{
+              fontSize: '24px',
+            }}>
+              💡
+            </div>
+            <div style={{
+              flex: 1,
+              fontSize: '14px',
+              color: '#1e40af',
+              lineHeight: '1.6',
+            }}>
+              <strong>이용 안내:</strong> 기자재를 클릭하여 상세 정보를 확인하고 예약할 수 있습니다.
+              대여 전 주의사항을 반드시 확인해주세요.
+            </div>
           </div>
-          <div style={{
-            flex: 1,
-            fontSize: '14px',
-            color: '#1e40af',
-            lineHeight: '1.6',
-          }}>
-            <strong>이용 안내:</strong> 기자재를 클릭하여 상세 정보를 확인하고 예약할 수 있습니다.
-            대여 전 주의사항을 반드시 확인해주세요.
-          </div>
-        </div>
+        )}
 
         {/* 기자재 목록 표 (conditionally rendered) */}
         {isOverview && (
