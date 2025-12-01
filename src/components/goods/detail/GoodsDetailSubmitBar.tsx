@@ -11,6 +11,12 @@ export const GoodsDetailSubmitBar: React.FC<Props> = ({ form, navigate }) => {
   React.useEffect(() => {
     console.log("[SubmitBar-MOUNT] 컴포넌트 마운트됨. Form:", form);
     console.log("[SubmitBar-MOUNT] Document.body:", document.body);
+
+    // 원본 form을 숨김 처리
+    if (form) {
+      form.style.display = "none";
+      console.log("[SubmitBar-MOUNT] 원본 form 숨김 처리 완료");
+    }
   }, [form]);
 
   const submit = async () => {
