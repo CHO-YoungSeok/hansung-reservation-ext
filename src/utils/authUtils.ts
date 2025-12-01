@@ -26,10 +26,30 @@ export const getLoginUrl = (returnUrl?: string): string => {
 
 /**
  * 로그인 페이지로 리다이렉트
- * 현재 페이지를 returnUrl로 사용하여, 로그인 후 원래 페이지로 돌아오도록 합니다.
+ * 로그인 성공 후 이전 페이지로 돌아갑니다.
+ * 단, 에러 메시지 페이지인 경우 홈페이지로 이동합니다.
+ *
+ * 원래 의도한 페이지를 sessionStorage에 저장하여,
+ * 로그인 실패 후 재시도 시에도 올바른 페이지로 복귀할 수 있도록 합니다.
  */
 export const redirectToLogin = (): void => {
-  window.location.href = getLoginUrl(window.location.href);
+  const currentUrl = window.location.href;
+  const errorMessagePagePrefix = 'https://www.hansung.ac.kr/message/message.do?siteId=hansung&message=';
+  const homepageUrl = 'https://www.hansung.ac.kr/hansung/index.do';
+
+  // 에러 페이지가 아닌 경우에만 의도한 페이지로 저장
+  // 이렇게 하면 로그인 실패 후에도 원래 의도한 페이지로 돌아갈 수 있음
+  if (!currentUrl.startsWith(errorMessagePagePrefix)) {
+    sessionStorage.setItem('HANSUNG_EXT_INTENDED_DEST', currentUrl);
+    console.log('[Auth] 원래 의도한 페이지 저장:', currentUrl);
+  }
+
+  // 에러 메시지 페이지에서 로그인하는 경우 홈페이지로 이동
+  const returnUrl = currentUrl.startsWith(errorMessagePagePrefix)
+    ? homepageUrl
+    : currentUrl;
+
+  window.location.href = getLoginUrl(returnUrl);
 };
 
 /**
@@ -68,7 +88,7 @@ export interface UserInfo {
 export const getUserInfo = (): UserInfo => {
   const isLoggedIn = isUserLoggedIn();
 
-  if (!isLoggedIn) {  
+  if (!isLoggedIn) {
     return {
       isLoggedIn: false,
       userName: '손님',

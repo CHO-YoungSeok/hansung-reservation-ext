@@ -82,7 +82,7 @@ export const parseGoodsFromHTML = (html: string): GoodsData[] => {
         const setCount = Math.floor(remainingCells / 4);
 
         if (setCount === 0) {
-          console.warn(`⚠️ 행 ${rowIndex + 1}: 유효한 세트가 없습니다 (${remainingCells}개 셀)`);
+          console.warn(`⚠️ 행 ${rowIndex + 1}: 유효한!@ 세트가 없습니다 (${remainingCells}개 셀)`);
           return;
         }
 
