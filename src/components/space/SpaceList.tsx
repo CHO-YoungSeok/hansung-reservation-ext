@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SpaceItem } from './SpaceItem';
 import spaceListData from './data/spaceListData.json';
 import { getReservationUrl } from '../../config/space';
+import './SpaceList.css';
+
+import type { TimeSlot } from './SpaceReservationForm/types';
+import { buildTimeSlotsForRoom } from '../../utils/calendarEvents';
+import { getTodayString } from '../../utils/dateUtils';
+
 
 interface Space {
   id: string;
@@ -24,6 +30,18 @@ interface SpaceListProps {
 
 export const SpaceList: React.FC<SpaceListProps> = ({ onSelectSpace }) => {
   const [spaces] = useState<Space[]>(spaceListData as Space[]);
+  const today = getTodayString();
+
+
+  // 방 id → TimeSlot[] 맵
+  const timeSlotsById = useMemo<Record<string, TimeSlot[]>>(() => {
+    const result: Record<string, TimeSlot[]> = {};
+    spaces.forEach((space) => {
+      // 화면에 보여지는 이름(세미나실(IB111), IB101 등) 기준으로 만든다
+      result[space.id] = buildTimeSlotsForRoom(space.name, today);
+    });
+    return result;
+  }, [spaces, today]);
 
   const handleSelectSpace = (id: string) => {
     const selected = spaces.find((space) => space.id === id);
@@ -43,18 +61,15 @@ export const SpaceList: React.FC<SpaceListProps> = ({ onSelectSpace }) => {
   };
 
   return (
-    <div className="space-list" style={{ 
-      display: 'grid', 
-      gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-      gap: '20px' 
-    }}>
-      {spaces.map(item => (
-        <SpaceItem 
-          key={item.id}
-          {...item}
-          onSelect={handleSelectSpace}
-        />
-      ))}
-    </div>
-  );
+  <div className="space-list">
+    {spaces.map((item) => (
+      <SpaceItem
+        key={item.id}
+        {...item}
+        timeSlots={timeSlotsById[item.id]}
+        onSelect={handleSelectSpace}
+      />
+    ))}
+  </div>
+);
 };

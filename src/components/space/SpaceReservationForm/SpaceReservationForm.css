@@ -630,3 +630,143 @@
   }
 }
 
+/* ====== 공통: SpaceCard 헤더/정보/시간대 ====== */
+
+.space-card__header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.space-card__info-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.space-card__info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 상태 배지 (예약 가능 / 예약 중 / 사용 불가) */
+
+.space-card__status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.space-card__status-badge--available {
+  background-color: #dcfce7;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.space-card__status-badge--reserved {
+  background-color: #e0f2fe;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.space-card__status-badge--unavailable {
+  background-color: #fee2e2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+/* 시간대 섹션 제목 */
+
+.space-card__time-section {
+  margin-top: 8px;
+}
+
+.space-card__time-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+/* 목록 페이지(list) 전용 가로형 레이아웃 */
+
+.space-card--list .space-card__container {
+  display: grid;
+  grid-template-columns: 260px 1fr; /* 왼쪽 사진, 오른쪽 내용 */
+  column-gap: 24px;
+  align-items: stretch;
+  padding: 16px 24px;
+}
+
+.space-card--list .space-card__image-container {
+  height: 180px;
+}
+
+.space-card--list .space-card__content {
+  padding: 8px 0 12px;
+}
+
+/* 리스트에서는 시간대 버튼을 pill 형태로 가로 배치 */
+
+.space-card--list .space-reservation-form__time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 하단: 범례 + "이 호수 예약하기" 버튼 */
+
+.space-card__bottom {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.space-card__reserve-button {
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.space-card__reserve-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* 모바일에서 카드가 세로로 쌓이도록 */
+
+@media (max-width: 900px) {
+  .space-card--list .space-card__container {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
+  .space-card--list .space-card__image-container {
+    height: 200px;
+  }
+
+  .space-card__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .space-card__reserve-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+

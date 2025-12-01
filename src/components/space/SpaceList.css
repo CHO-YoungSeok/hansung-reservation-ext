@@ -1,0 +1,15 @@
+/* 스터디실 목록 전체 컨테이너 */
+.space-list {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px 16px 40px;
+  display: flex;
+  flex-direction: column;   /* 세로로 한 줄씩 */
+  gap: 24px;                /* 카드 사이 간격 */
+}
+
+/* 카드 하나를 화면 가운데 정렬하고 싶으면 (선택사항) */
+.space-list .card.space-card {
+  /* Card.tsx에서 기본 패딩/보더를 제거하고 싶을 때 같이 사용 */
+  width: 100%;
+}
