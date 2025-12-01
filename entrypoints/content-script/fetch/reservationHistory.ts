@@ -331,21 +331,28 @@ export const fetchGoodsReservations = async (): Promise<GoodsReservation[]> => {
  */
 export const fetchStudyRoomReservations = async (): Promise<StudyRoomReservation[]> => {
   try {
-    console.log('📡 스터디룸 예약 내역 가져오는 중...');
+    console.log('📡 [스터디룸 예약] 가져오는 중...');
 
-    // 실제 URL 구성
+    // CORS 우회를 위해 background script를 통해 fetch
     const url = 'https://www.hansung.ac.kr/onestop/8952/subview.do?enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFZpZXcuZG8lM0Y%3D';
 
-    const response = await fetch(url, {
-      credentials: 'include', // 쿠키 포함
+    console.log('🔍 [DEBUG] 스터디룸 URL:', url);
+
+    const response = await browser.runtime.sendMessage({
+      type: 'FETCH_HTML',
+      url: url,
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    if (!response.success) {
+      throw new Error(response.error || 'Fetch failed');
     }
 
-    const html = await response.text();
-    return parseStudyRoomReservations(html);
+    console.log('🔍 [DEBUG] 스터디룸 HTML 받음, 길이:', response.html.length);
+
+    const result = parseStudyRoomReservations(response.html);
+    console.log('✅ [스터디룸 예약] 파싱 완료, 결과 개수:', result.length);
+
+    return result;
   } catch (error) {
     console.error('❌ 스터디룸 예약 내역 fetch 실패:', error);
     return [];

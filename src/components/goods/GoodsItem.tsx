@@ -12,18 +12,20 @@ interface GoodsItemProps {
   specs?: GoodsSpec;
   warnings?: GoodsWarning;
   onSelect?: (id: string) => void;
+  isOverview?: boolean;
 }
 
-export const GoodsItem: React.FC<GoodsItemProps> = ({ 
-  id, 
-  name, 
-  category, 
-  status, 
+export const GoodsItem: React.FC<GoodsItemProps> = ({
+  id,
+  name,
+  category,
+  status,
   imageUrl,
   description,
   specs,
   warnings,
-  onSelect 
+  onSelect,
+  isOverview = false
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -52,7 +54,7 @@ export const GoodsItem: React.FC<GoodsItemProps> = ({
   };
 
   return (
-    <Card onClick={() => onSelect?.(id)}>
+    <Card onClick={onSelect ? () => onSelect(id) : undefined}>
       <div style={{
         display: 'flex',
         gap: '20px',
@@ -122,17 +124,20 @@ export const GoodsItem: React.FC<GoodsItemProps> = ({
             }}>
               {name}
             </h3>
-            <span style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              color: '#fff',
-              backgroundColor: getStatusColor(status),
-              whiteSpace: 'nowrap',
-            }}>
-              {getStatusText(status)}
-            </span>
+            {/* 개요 페이지에서는 상태 표시 숨김 */}
+            {!isOverview && (
+              <span style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                color: '#fff',
+                backgroundColor: getStatusColor(status),
+                whiteSpace: 'nowrap',
+              }}>
+                {getStatusText(status)}
+              </span>
+            )}
           </div>
 
           {/* 카테고리 */}

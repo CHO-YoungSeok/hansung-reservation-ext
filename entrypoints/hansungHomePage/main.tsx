@@ -207,7 +207,45 @@ const NewTab: React.FC<{ userData: UserData }> = ({ userData }) => {
           marginBottom: '15px',
         }}>
           <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#333', marginBottom: '15px' }}>최근 예약</h2>
-          <CompactRecentReservations limit={3} />
+          {userData.isLoggedIn ? (
+            <CompactRecentReservations limit={3} />
+          ) : (
+            <div style={{
+              padding: '40px 20px',
+              textAlign: 'center',
+              color: '#999',
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
+              <div style={{ fontSize: '16px', fontWeight: '600', color: '#666', marginBottom: '8px' }}>
+                로그인이 필요합니다
+              </div>
+              <div style={{ fontSize: '14px', color: '#999', marginBottom: '20px' }}>
+                예약 내역을 확인하려면 로그인해주세요
+              </div>
+              <button
+                onClick={redirectToLogin}
+                style={{
+                  padding: '10px 24px',
+                  background: theme.accentBlue,
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = theme.darkerBlueHover;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = theme.accentBlue;
+                }}
+              >
+                로그인하기
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Quick Links */}

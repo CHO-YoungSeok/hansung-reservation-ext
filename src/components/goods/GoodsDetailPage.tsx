@@ -10,6 +10,7 @@ import {
   GoodsDetailAgreement,
   GoodsDetailSubmitBar
 } from "../../components/goods/detail";
+import { getUserInfo, UserInfo } from "../../utils/authUtils";
 
 import "../../components/goods/detail/GoodsDetail.css";
 
@@ -17,6 +18,7 @@ export const GoodsDetailPage: React.FC = () => {
   const { lendGroupSeq, lendMhrmlSeq } = useParams();
 
   const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   const [form, setForm] = useState<HTMLFormElement | null>(null);
 
@@ -31,6 +33,7 @@ export const GoodsDetailPage: React.FC = () => {
   const [todayInput, setTodayInput] = useState<HTMLInputElement | null>(null);
 
   useEffect(() => {
+    setUserInfo(getUserInfo());
     const load = async () => {
       const url = `https://hansung.ac.kr/lend/cncschool/1/${lendGroupSeq}/${lendMhrmlSeq}/lendMhrmlRegistView.do`;
 
@@ -68,7 +71,7 @@ export const GoodsDetailPage: React.FC = () => {
     load();
   }, [lendGroupSeq, lendMhrmlSeq]);
 
-  if (loading) return <div style={{ padding: 40 }}>불러오는 중...</div>;
+  if (loading || !userInfo) return <div style={{ padding: 40 }}>불러오는 중...</div>;
 
   return (
     <GoodsDetailLayout
@@ -80,7 +83,7 @@ export const GoodsDetailPage: React.FC = () => {
         />
       }
     >
-      <GoodsDetailDefaultForm html={defaultFormHTML} />
+      <GoodsDetailDefaultForm html={defaultFormHTML} userInfo={userInfo} />
 
       <GoodsDetailDatePicker todayInput={todayInput} />
 

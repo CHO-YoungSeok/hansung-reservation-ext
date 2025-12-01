@@ -6,7 +6,10 @@ import type { GoodsData } from '../../services/goodsApi';
 import { getDefaultGoods } from '../../services/goodsApi';
 import { isUserLoggedIn, redirectToLogin } from '../../utils/authUtils';
 
-export const GoodsList: React.FC<{ isOverview?: boolean }> = ({ isOverview = false }) => {
+export const GoodsList: React.FC<{
+  isOverview?: boolean;
+  initialGoods?: GoodsData[];
+}> = ({ isOverview = false, initialGoods }) => {
   const navigate = useNavigate();
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,21 +22,33 @@ export const GoodsList: React.FC<{ isOverview?: boolean }> = ({ isOverview = fal
         setLoading(true);
         setError(null);
 
-        // content script 환경에서는 직접 페이지에서 데이터 추출
-        // fetchGoodsFromCurrentPage는 async 함수이므로 await 필요
+        // PRIORITY 1: Use initialGoods from content script
+        if (initialGoods && initialGoods.length > 0) {
+          console.log('[GoodsList] Using initialGoods:', initialGoods.length, 'items');
+          setGoods(initialGoods);
+          setLoading(false);
+          return;
+        }
+
+        // PRIORITY 2: Fallback to async fetch (for development/testing)
         try {
           const { fetchGoodsFromCurrentPage } = await import(
             '../../../entrypoints/content-script/fetch/goodsList'
           );
 
-          console.log('📡 기자재 데이터 가져오는 중...');
+          console.log('[GoodsList] Attempting async fetch fallback');
           const data = await fetchGoodsFromCurrentPage();
-          console.log('✅ 현재 페이지에서 추출한 기자재 정보:', data);
 
-          // 데이터가 없으면 기본값 사용
-          setGoods(data.length > 0 ? data : getDefaultGoods());
+          if (data.length > 0) {
+            console.log('✅ 현재 페이지에서 추출한 기자재 정보:', data);
+            setGoods(data);
+          } else {
+            // PRIORITY 3: Ultimate fallback to defaults
+            console.warn('[GoodsList] Using default goods');
+            setGoods(getDefaultGoods());
+          }
         } catch (importError) {
-          console.warn('⚠️ fetch 모듈 import 실패, 기본값 사용:', importError);
+          console.warn('[GoodsList] Fetch failed, using defaults:', importError);
           setGoods(getDefaultGoods());
         }
       } catch (err) {
@@ -46,7 +61,7 @@ export const GoodsList: React.FC<{ isOverview?: boolean }> = ({ isOverview = fal
     };
 
     loadGoods();
-  }, []);
+  }, [initialGoods]);
 
   const handleSelectGoods = (id: string) => {
     // 로그인 체크
@@ -115,7 +130,12 @@ export const GoodsList: React.FC<{ isOverview?: boolean }> = ({ isOverview = fal
         }}
       >
         {goods.map((g) => (
-          <GoodsItem key={g.id} {...g} onSelect={handleSelectGoods} />
+          <GoodsItem
+            key={g.id}
+            {...g}
+            onSelect={isOverview ? undefined : handleSelectGoods}
+            isOverview={isOverview}
+          />
         ))}
       </div>
 

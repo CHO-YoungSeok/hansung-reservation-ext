@@ -18,7 +18,10 @@ export default defineConfig({
       {
         matches: [
           'https://www.hansung.ac.kr/hansung/index.do*',
-          'https://www.hansung.ac.kr/sites/hansung/index.do*'
+          'https://www.hansung.ac.kr/sites/hansung/index.do*',
+          'https://hansung.ac.kr/cncschool/7309/subview.do',
+          'https://www.hansung.ac.kr/onestop/8952/subview.do',
+          'https://www.hansung.ac.kr/*'
         ],
         js: ['entrypoints/home.content.ts'],
       },

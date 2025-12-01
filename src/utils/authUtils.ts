@@ -14,13 +14,13 @@ export const isUserLoggedIn = (): boolean => {
  * @param returnUrl - 로그인 후 돌아올 URL. 지정하지 않으면 기본 로그인 페이지만 반환합니다.
  */
 export const getLoginUrl = (returnUrl?: string): string => {
-  const loginPage = 'https://hansung.ac.kr/hnuLogin/cncschool/loginView.do';
-  
+  const loginPage = 'https://www.hansung.ac.kr/hnuLogin/onestop/loginView.do';
+
   if (returnUrl) {
     // return_url 파라미터에 현재 URL을 인코딩하여 추가
     return `${loginPage}?return_url=${encodeURIComponent(returnUrl)}`;
   }
-  
+
   return loginPage;
 };
 
@@ -33,11 +33,10 @@ export const redirectToLogin = (): void => {
 };
 
 /**
- * 한성대 로그아웃 페이지 URL (추정)
- * 참고: 실제 로그아웃 프로세스는 다를 수 있습니다.
+ * 한성대 로그아웃 페이지 URL
  */
 export const getLogoutUrl = (): string => {
-  return 'https://www.hansung.ac.kr/j_ace/ace/logout.do';
+  return 'https://www.hansung.ac.kr/hnuLogin/cncschool/hnuLogout.do';
 };
 
 /**
@@ -69,7 +68,7 @@ export interface UserInfo {
 export const getUserInfo = (): UserInfo => {
   const isLoggedIn = isUserLoggedIn();
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn) {  
     return {
       isLoggedIn: false,
       userName: '손님',

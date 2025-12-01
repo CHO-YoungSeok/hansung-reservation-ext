@@ -10,6 +10,7 @@ import {
   GoodsDetailAgreement,
   GoodsDetailSubmitBar,
 } from "../../components/goods/detail";
+import { getUserInfo } from "../../utils/authUtils";
 
 import "../../components/goods/detail/GoodsDetail.css";
 
@@ -57,6 +58,9 @@ export const GoodsDetailPage: React.FC = () => {
 
   const [timeTableData, setTimeTableData] = useState<any>(null);
   const [useHours, setUseHours] = useState<number>(1); // 예상사용시간
+
+  // Get user info
+  const userInfo = getUserInfo();
 
   /*──────────────────────────────
     1) 초기 전체 HTML 로딩
@@ -205,6 +209,7 @@ export const GoodsDetailPage: React.FC = () => {
       <GoodsDetailDefaultForm
         html={defaultFormHTML}
         onUseHoursChange={(h) => setUseHours(h)}
+        userInfo={userInfo}
       />
 
       <GoodsDetailDatePicker

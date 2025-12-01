@@ -8,6 +8,18 @@ This project is a Chrome/Edge extension designed to improve the user experience 
 
 The extension provides a new, interactive campus map on the new tab page, allowing users to quickly navigate to the reservation pages for different buildings. It also enhances the UI/UX of the equipment (goods) and space reservation pages by replacing the existing interface with a more modern and user-friendly one built with React.
 
+## WXT Framework
+
+This extension uses [WXT](https://wxt.dev/), a modern framework for building browser extensions. Key WXT concepts:
+
+- **Content Scripts**: Defined in `wxt.config.ts` with URL match patterns
+- **Auto-imports**: WXT provides `defineContentScript()` without explicit imports
+- **Hot Reload**: Development mode (`npm run dev`) supports hot module replacement
+- **Multi-browser Support**: Single codebase builds for Chrome, Firefox, Edge via `-b` flag
+- **Type Safety**: Automatic TypeScript types generation in `.wxt/types/`
+
+The extension's manifest is automatically generated from `wxt.config.ts`. To add new content scripts or permissions, edit this file.
+
 ## Building and Running
 
 The project uses `npm` for dependency management and running scripts.
@@ -77,12 +89,33 @@ npm run compile
 
 The project follows a structure that separates concerns into different directories:
 
-- `entrypoints/`: Contains the entry points for the extension, such as content scripts (`.content.ts`), background scripts (`background.ts`), the new tab page, and the popup.
-- `src/`: Contains the core source code of the React application.
-    - `components/`: Reusable React components.
-    - `pages/`: Top-level page components that are rendered by the content scripts.
-    - `services/`: Business logic, API interactions, and data fetching.
-- `wxt.config.ts`: The main configuration file for the WXT framework, where manifest properties, permissions, and other settings are defined.
+- `entrypoints/`: Contains the entry points for the extension
+    - `*.content.ts` - Content scripts that inject into Hansung University pages
+    - `content-script/fetch/` - DOM parsing and data extraction utilities
+    - `hansungHomePage/` - Side panel React components for homepage
+    - `newtab/` - New tab page implementation
+    - `popup/` - Browser extension popup
+- `src/`: Contains the core source code of the React application
+    - `components/` - Reusable React components
+        - `common/` - Shared UI components (Button, Card, etc.)
+        - `goods/` - Equipment-specific components (GoodsItem, CategoryMenu, ReservationForm)
+        - `space/` - Space reservation components
+        - `layout/` - Layout components
+    - `pages/` - Top-level page components that are rendered by the content scripts
+        - `goods/` - GoodsListPage, GoodsDetailPage, MyReservation
+        - `space/` - SpaceListPage, SpaceDetailPage, SpaceRouter
+        - `home/` - HomePage
+    - `services/` - Business logic, API interactions, and data dictionaries
+        - `goodsApi.ts` - Equipment data types and API functions
+        - `goodsDescription.ts` - Dictionary mapping equipment names to detailed descriptions
+        - `goodsWarnings.ts` - Dictionary mapping equipment categories to safety warnings
+        - `reservationApi.ts` - Reservation-related API functions
+    - `utils/` - Utility functions
+        - `authUtils.ts` - Login status detection and authentication helpers
+        - `pageDataExtractor.ts` - Generic page data extraction utilities
+        - `spaceFormAutoFill.ts` - Form auto-fill utilities
+        - `calendarEvents.ts` - Calendar integration utilities
+- `wxt.config.ts`: WXT framework configuration (manifest properties, permissions, content script matches)
 
 ## Architecture and Data Flow
 
@@ -91,14 +124,27 @@ The project follows a structure that separates concerns into different directori
 The extension uses multiple content scripts that inject React applications into specific pages of the Hansung University website:
 
 1. **goods.content.ts** - Injects the equipment reservation UI into `https://hansung.ac.kr/cncschool/7309/subview.do*`
+   - Extracts data BEFORE clearing DOM to preserve scraped information
+   - Passes `initialGoods` prop to `GoodsListPage` component
+
 2. **space.content.ts** - Injects the space reservation UI into the space reservation pages
-3. **home.content.ts** - Injects UI improvements into the homepage
+
+3. **home.content.ts** - Injects a floating side panel on the Hansung homepage
+   - Creates a floating toggle button (fixed position, right side)
+   - Renders a slide-in side panel with reservation system shortcuts
+   - Uses `authUtils.ts` to check user login status via DOM inspection
+   - Panel can be toggled with button click or ESC key
+
+4. **custom_reservation_page.content.ts** - Custom reservation page modifications
+
+5. **portal.content.ts** - Portal page modifications
 
 Each content script follows the same pattern:
-1. Wait for the page to load
+1. Wait for the page to load (check `document.readyState`)
 2. Find the target container (usually `#contents` or `.contents`)
-3. Clear the existing content
-4. Create a React root and render the corresponding page component
+3. **CRITICAL**: Extract data from DOM BEFORE clearing (for goods/space pages)
+4. Clear the existing content
+5. Create a React root and render the corresponding page component
 
 ### Data Extraction and Rendering Flow
 
@@ -173,3 +219,27 @@ These dictionaries are matched against the extracted equipment names/categories 
    - '2' = 3D 프린터
    - '3' = 노트북
    - '4' = 레이저 커팅기
+
+6. **Authentication Detection**: The extension uses DOM-based authentication checking:
+   - `authUtils.ts` provides `isUserLoggedIn()`, which inspects the DOM structure
+   - `checkLoginStatus()` in `authChecker.ts` performs the actual DOM inspection
+   - Login/logout URLs and redirect functions are centralized in `authUtils.ts`
+   - User info is extracted from the page DOM structure via `getUserInfo()`
+
+## Testing the Extension
+
+### Loading in Browser
+
+1. Build the extension: `npm run dev` (for development) or `npm run build` (for production)
+2. Open Chrome/Edge and navigate to `chrome://extensions/` or `edge://extensions/`
+3. Enable "Developer mode" (toggle in top-right corner)
+4. Click "Load unpacked" and select the `.output/chrome-mv3-dev` (or `.output/chrome-mv3` for production) directory
+5. Navigate to `https://hansung.ac.kr/cncschool/7309/subview.do` to test the goods page
+6. Navigate to `https://www.hansung.ac.kr/sites/hansung/index.do` to test the homepage side panel
+
+### Debugging
+
+- Open Chrome DevTools on the Hansung University pages to see console logs
+- The data extraction functions include extensive `console.log` statements for debugging
+- Check the "Errors" tab in `chrome://extensions/` for content script errors
+- Use `console.log` statements liberally in the data extraction functions to trace parsing issues

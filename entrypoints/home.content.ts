@@ -6,7 +6,9 @@ import { getUserInfo } from '../src/utils/authUtils';
 export default defineContentScript({
   matches: [
     'https://www.hansung.ac.kr/hansung/index.do*',
-    'https://www.hansung.ac.kr/sites/hansung/index.do*'
+    'https://www.hansung.ac.kr/sites/hansung/index.do*',
+    'https://hansung.ac.kr/cncschool/7309/subview.do',
+    'https://www.hansung.ac.kr/onestop/8952/subview.do'
   ],
   main() {
     console.log('한성대 홈페이지 사이드 패널 시작');

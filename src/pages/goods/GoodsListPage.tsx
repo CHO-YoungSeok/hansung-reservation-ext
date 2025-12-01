@@ -5,6 +5,8 @@ import { GoodsList } from '../../components/goods/GoodsList';
 import { CategoryMenu } from '../../components/goods/CategoryMenu';
 import { CategoryGoodsList } from '../../components/goods/CategoryGoodsList';
 import { GoodsDetailPage } from './GoodsDetailPage';
+import { MyReservationsPage } from './MyReservation';
+import type { GoodsData } from '../../services/goodsApi';
 
 // 카테고리별 기자재 목록 페이지
 const CategoryPage: React.FC = () => {
@@ -30,10 +32,11 @@ const MyListPage: React.FC = () => {
 
 // 라우터 컨텐츠
 interface GoodsRoutesProps {
-  isOverview: boolean; // Add prop
+  isOverview: boolean;
+  initialGoods?: GoodsData[]; // Add initialGoods prop
 }
 
-const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview }) => { // Accept prop
+const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview, initialGoods }) => { // Accept props
   const location = useLocation();
   const navigate = useNavigate();
   const showBackButton = location.pathname.includes('/detail');
@@ -78,9 +81,12 @@ const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview }) => { // Accept 
         {/* 기자재 목록 표 (conditionally rendered) */}
         {isOverview && (
           <h2 style={{
-            fontWeight: 'bold',
-            fontSize: '18px', // Added font size for better visibility
-            margin: '20px 0 10px 0', // Added margin
+            fontWeight: '700',
+            fontSize: '28px',
+            color: '#1f2937',
+            margin: '24px 0 20px 0',
+            paddingBottom: '12px',
+            borderBottom: '3px solid #3b82f6',
           }}>
             기자재 목록 표
           </h2>
@@ -113,7 +119,7 @@ const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview }) => { // Accept 
 
         {/* 라우터 기반 콘텐츠 - 하단만 변경됨 */}
         <Routes>
-          <Route path="/" element={<GoodsList isOverview={isOverview} />} /> {/* Pass isOverview */}
+          <Route path="/" element={<GoodsList isOverview={isOverview} initialGoods={initialGoods} />} />
           <Route path="/category/:lendGroupSeq" element={<CategoryPage />} />
           <Route path="/detail/:lendGroupSeq/:lendMhrmlSeq" element={<GoodsDetailPage />} />
           <Route path="/my-list" element={<MyReservationsPage />} />
@@ -124,7 +130,11 @@ const GoodsRoutes: React.FC<GoodsRoutesProps> = ({ isOverview }) => { // Accept 
 };
 
 // 메인 컴포넌트 - Router로 감싸기
-export const GoodsListPage: React.FC = () => {
+interface GoodsListPageProps {
+  initialGoods?: GoodsData[];
+}
+
+export const GoodsListPage: React.FC<GoodsListPageProps> = ({ initialGoods }) => {
   // 현재 URL을 기반으로 초기 경로 설정
   const getInitialRoute = () => {
     const currentUrl = window.location.pathname;
@@ -146,7 +156,7 @@ export const GoodsListPage: React.FC = () => {
 
   return (
     <Router initialEntries={[initialRoute]} initialIndex={0}>
-      <GoodsRoutes isOverview={isOverviewPage} /> {/* Pass the prop */}
+      <GoodsRoutes isOverview={isOverviewPage} initialGoods={initialGoods} />
     </Router>
   );
 };

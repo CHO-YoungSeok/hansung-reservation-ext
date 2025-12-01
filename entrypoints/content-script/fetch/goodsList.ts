@@ -5,7 +5,7 @@ import { getDescriptionByGoodsName, getCategoryDefaultDescription } from '~/src/
 /**
  * HTML 문자열에서 기자재 정보 추출
  */
-const parseGoodsFromHTML = (html: string): GoodsData[] => {
+export const parseGoodsFromHTML = (html: string): GoodsData[] => {
   const goods: GoodsData[] = [];
 
   try {
