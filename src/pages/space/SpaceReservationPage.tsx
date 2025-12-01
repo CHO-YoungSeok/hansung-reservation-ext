@@ -132,6 +132,7 @@ export const SpaceReservationPage: React.FC = () => {
             });
 
             if (success) {
+              // ✅ 원본 폼 제출 후 예약 목록 페이지로 이동
               window.location.href = getListUrl();
             } else {
               throw new Error('예약 제출에 실패했습니다.');

@@ -239,12 +239,11 @@ export default defineContentScript({
         return;
       }
 
-      // "나의 신청내역" 전용 페이지에서는 커스텀 UI를 렌더링하지 않는다.
-      // (상세 예약 폼이 아니라 예약 내역 확인 페이지이기 때문)
+      // "나의 신청내역" 전용 페이지(예약 내역 확인 화면)는 원본 UI를 그대로 사용
       const currentUrl = window.location.href;
-      const myReservationUrl =
-        'https://www.hansung.ac.kr/onestop/8952/subview.do?enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFZpZXcuZG8lM0Y%3D';
-      if (currentUrl === myReservationUrl) {
+      const myReservationEnc =
+        'enc=Zm5jdDF8QEB8JTJGcmVzdmUlMkZvbmVzdG9wJTJGMjElMkZhcnRjbFZpZXcuZG8lM0Y%3D';
+      if (currentUrl.includes(myReservationEnc)) {
         return;
       }
 
