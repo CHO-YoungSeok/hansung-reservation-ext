@@ -1,3 +1,11 @@
+# 테스트 실행 방법
+npm install
+
+npm run dev
+
+
+
+
 # 한성대학교 예약 시스템 개선 확장 프로그램
 
 이 프로젝트는 한성대학교의 장비 및 공간 예약 시스템의 사용자 경험(UX)을 개선하기 위해 개발된 Chrome 및 Edge 브라우저 확장 프로그램입니다. [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), 그리고 브라우저 확장 프로그램 개발 프레임워크인 [WXT](https://wxt.dev/)를 사용하여 구축되었습니다.
